@@ -1,0 +1,99 @@
+# CODE Implementation Rules for GitHub Actions Automation Agent
+# This file defines how to write code based on analyzed requirements
+
+[implementation]
+name = "Code Implementation Guidelines"
+description = "Rules for implementing code changes based on requirements analysis"
+
+[implementation.principles]
+maintainability = "Write clean, readable, and maintainable code"
+consistency = "Follow existing code patterns and conventions"
+performance = "Optimize for performance without sacrificing readability"
+security = "Implement secure coding practices"
+testing = "Write testable code with proper error handling"
+
+[implementation.standards]
+javascript = [
+    "Use ES6+ features appropriately",
+    "Follow React best practices",
+    "Implement proper error boundaries",
+    "Use meaningful variable and function names",
+    "Add JSDoc comments for complex functions"
+]
+
+react = [
+    "Use functional components with hooks",
+    "Implement proper state management",
+    "Optimize re-renders with useMemo/useCallback",
+    "Handle loading and error states",
+    "Follow component composition patterns"
+]
+
+css = [
+    "Use consistent naming conventions",
+    "Implement responsive design",
+    "Optimize for accessibility",
+    "Follow BEM methodology where applicable",
+    "Use CSS custom properties for theming"
+]
+
+api = [
+    "Implement proper error handling",
+    "Use consistent response formats",
+    "Add request/response validation",
+    "Implement proper authentication",
+    "Add rate limiting where needed"
+]
+
+[implementation.patterns]
+error_handling = [
+    "Use try-catch blocks for async operations",
+    "Implement error boundaries for React components",
+    "Provide meaningful error messages to users",
+    "Log errors for debugging purposes"
+]
+
+state_management = [
+    "Use React Context for global state",
+    "Implement custom hooks for complex logic",
+    "Use local state for component-specific data",
+    "Optimize state updates to prevent unnecessary renders"
+]
+
+performance = [
+    "Implement lazy loading for routes and components",
+    "Use React.memo for expensive components",
+    "Optimize bundle size with code splitting",
+    "Implement proper caching strategies"
+]
+
+[implementation.file_structure]
+components = "Organize components by feature/domain"
+hooks = "Create custom hooks for reusable logic"
+services = "Separate API calls and business logic"
+utils = "Create utility functions for common operations"
+types = "Define TypeScript types/interfaces"
+
+[implementation.quality_checks]
+before_commit = [
+    "Run linting and formatting",
+    "Execute unit tests",
+    "Check for console.log statements",
+    "Verify no unused imports",
+    "Ensure proper error handling"
+]
+
+code_review = [
+    "Check for code duplication",
+    "Verify security best practices",
+    "Ensure accessibility compliance",
+    "Review performance implications",
+    "Validate user experience"
+]
+
+[implementation.documentation]
+inline_comments = "Add comments for complex business logic"
+function_docs = "Document function parameters and return values"
+component_props = "Document React component props"
+api_endpoints = "Document API endpoint usage"
+readme_updates = "Update README with new features"

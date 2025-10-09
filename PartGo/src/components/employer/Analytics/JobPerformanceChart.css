@@ -1,0 +1,337 @@
+.job-performance-chart {
+    padding: 24px;
+}
+
+/* Header */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.header-content h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.header-content p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.metric-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.metric-btn {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.metric-btn:hover {
+    background: #f8fafc;
+}
+
+.metric-btn.active {
+    background: white;
+    border-width: 2px;
+}
+
+/* Content */
+.chart-content {
+    margin-bottom: 24px;
+}
+
+.performance-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.performance-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.performance-bar-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.job-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+}
+
+.job-rank {
+    width: 32px;
+    height: 32px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.job-details {
+    flex: 1;
+}
+
+.job-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+}
+
+.job-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    font-size: 12px;
+    color: #64748b;
+    background: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.bar-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.performance-bar {
+    height: 24px;
+    border-radius: 12px;
+    position: relative;
+    min-width: 8px;
+    transition: width 0.8s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bar-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0) 50%, 
+        rgba(0, 0, 0, 0.1) 100%);
+    border-radius: 12px;
+}
+
+.bar-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    min-width: 60px;
+    text-align: right;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.no-data-icon {
+    font-size: 48px;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* Insights */
+.chart-insights {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.insight-card {
+    text-align: center;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.insight-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.insight-card p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0 0 8px 0;
+}
+
+.insight-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .job-performance-chart {
+        padding: 20px;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .metric-selector {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .performance-bar-item {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .job-info {
+        min-width: auto;
+        justify-content: center;
+    }
+    
+    .bar-container {
+        justify-content: space-between;
+    }
+    
+    .insight-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .job-stats {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .metric-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .job-title {
+        font-size: 14px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .header-content h3 {
+        color: #f1f5f9;
+    }
+    
+    .header-content p {
+        color: #94a3b8;
+    }
+    
+    .metric-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #94a3b8;
+    }
+    
+    .metric-btn:hover {
+        background: #475569;
+    }
+    
+    .metric-btn.active {
+        background: #334155;
+    }
+    
+    .performance-bar-item {
+        background: #334155;
+        border-color: #475569;
+    }
+    
+    .performance-bar-item:hover {
+        background: #475569;
+    }
+    
+    .job-title {
+        color: #f1f5f9;
+    }
+    
+    .stat {
+        background: #475569;
+        color: #94a3b8;
+    }
+    
+    .bar-value {
+        color: #f1f5f9;
+    }
+    
+    .no-data {
+        color: #94a3b8;
+    }
+    
+    .chart-insights {
+        background: #334155;
+        border-color: #475569;
+    }
+    
+    .insight-card {
+        background: #475569;
+        border-color: #64748b;
+    }
+    
+    .insight-card h4 {
+        color: #f1f5f9;
+    }
+    
+    .insight-card p {
+        color: #94a3b8;
+    }
+}

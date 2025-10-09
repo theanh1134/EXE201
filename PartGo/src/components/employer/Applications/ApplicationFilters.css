@@ -1,0 +1,288 @@
+.application-filters {
+  background: white !important;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+/* Header */
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: white !important;
+}
+
+.filters-title h3 {
+  font-size: 18px;
+  font-weight: 700 !important;
+  color: #1e40af !important;
+  margin: 0 0 4px 0;
+}
+
+.result-count {
+  font-size: 14px;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.clear-filters-btn {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-filters-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Content */
+.filters-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 24px;
+  background: white !important;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: 600 !important;
+  color: #1e40af !important;
+}
+
+.filter-group select,
+.search-input input {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white !important;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+  transition: all 0.2s;
+}
+
+.filter-group select:focus,
+.search-input input:focus {
+  outline: none;
+  border-color: #1e40af !important;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+/* Search Input */
+.search-input {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1e40af !important;
+  font-size: 14px;
+}
+
+.search-input input {
+  padding-left: 36px;
+  width: 100%;
+}
+
+/* Force Light Mode - Override Dark Theme */
+.application-filters,
+.application-filters *,
+.application-filters .filters-header,
+.application-filters .filters-content,
+.application-filters .filter-group,
+.application-filters .filter-group select,
+.application-filters .search-input input {
+  background: white !important;
+  background-color: white !important;
+}
+
+.application-filters .filters-title h3 {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.application-filters .result-count {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.application-filters .filter-group label {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.application-filters .filter-group select,
+.application-filters .search-input input {
+  background: white !important;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.application-filters .search-icon {
+  color: #1e40af !important;
+}
+
+/* Quick Filters */
+.quick-filters {
+  padding: 20px 24px;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quick-filters-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.quick-filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quick-filter-btn {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.quick-filter-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.quick-filter-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filters-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .filters-content {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .quick-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .quick-filter-buttons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-filter-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    gap: 8px;
+  }
+
+  .quick-filter-btn {
+    text-align: center;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .application-filters {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .filters-header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-color: #475569;
+  }
+
+  .filters-title h3 {
+    color: #f1f5f9;
+  }
+
+  .result-count {
+    color: #94a3b8;
+  }
+
+  .filter-group label {
+    color: #e2e8f0;
+  }
+
+  .filter-group select,
+  .search-input input {
+    background: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+
+  .filter-group select:focus,
+  .search-input input:focus {
+    border-color: #3b82f6;
+  }
+
+  .search-icon {
+    color: #64748b;
+  }
+
+  .quick-filters {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .quick-filters-label {
+    color: #94a3b8;
+  }
+
+  .quick-filter-btn {
+    background: #475569;
+    border-color: #64748b;
+    color: #f1f5f9;
+  }
+
+  .quick-filter-btn:hover {
+    background: #64748b;
+  }
+}

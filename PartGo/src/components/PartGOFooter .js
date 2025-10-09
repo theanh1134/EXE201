@@ -51,37 +51,37 @@ const PartGOFooter = () => {
                                 </span>
                             </div>
                             <p style={{ color: '#bdc3c7', lineHeight: '1.6', fontSize: '14px' }}>
-                                Great platform for the job seeker that passionate about startups. Find your dream job easier.
+                                Nền tảng tuyệt vời cho những người tìm việc làm part time tại Hòa Lạc, Hà Nội. Tìm kiếm công việc mơ ước dễ dàng hơn.
                             </p>
                         </div>
 
                         {/* About Column */}
                         <div className="col-lg-2 col-md-3 col-6 mb-4">
-                            <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>About</h6>
+                            <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Về chúng tôi</h6>
                             <ul className="list-unstyled">
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Companies
+                                        Công ty
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Pricing
+                                        Bảng giá
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Terms
+                                        Điều khoản
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Advice
+                                        Tư vấn
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Privacy Policy
+                                        Chính sách bảo mật
                                     </a>
                                 </li>
                             </ul>
@@ -89,26 +89,26 @@ const PartGOFooter = () => {
 
                         {/* Resources Column */}
                         <div className="col-lg-2 col-md-3 col-6 mb-4">
-                            <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Resources</h6>
+                            <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Tài nguyên</h6>
                             <ul className="list-unstyled">
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Help Docs
+                                        Tài liệu hỗ trợ
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Guide
+                                        Hướng dẫn
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Updates
+                                        Cập nhật
                                     </a>
                                 </li>
                                 <li className="mb-2">
                                     <a href="#" className="text-decoration-none" style={{ color: '#bdc3c7', fontSize: '14px' }}>
-                                        Contact Us
+                                        Liên hệ
                                     </a>
                                 </li>
                             </ul>
@@ -116,16 +116,16 @@ const PartGOFooter = () => {
 
                         {/* Newsletter Subscription */}
                         <div className="col-lg-4 col-md-12 mb-4">
-                            <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Get job notifications</h6>
+                            <h6 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Nhận thông báo việc làm</h6>
                             <p style={{ color: '#bdc3c7', fontSize: '14px', marginBottom: '20px' }}>
-                                The latest job news, articles, sent to your inbox weekly.
+                                Tin tức việc làm mới nhất, bài viết được gửi đến hộp thư của bạn hàng tuần.
                             </p>
                             <div onSubmit={handleSubscribe}>
                                 <div className="d-flex">
                                     <input
                                         type="email"
                                         className="form-control me-2"
-                                        placeholder="Email Address"
+                                        placeholder="Địa chỉ email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         style={{
@@ -149,7 +149,7 @@ const PartGOFooter = () => {
                                             fontSize: '14px'
                                         }}
                                     >
-                                        Subscribe
+                                        Đăng ký
                                     </button>
                                 </div>
                             </div>
@@ -161,7 +161,7 @@ const PartGOFooter = () => {
                     <div className="row align-items-center">
                         <div className="col-md-6">
                             <p className="mb-0" style={{ color: '#7f8c8d', fontSize: '14px' }}>
-                                2021 © JobHuntly. All rights reserved.
+                                2024 © Part GO. Tất cả quyền được bảo lưu.
                             </p>
                         </div>
                         <div className="col-md-6">

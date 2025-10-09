@@ -1,0 +1,44 @@
+CURRICULUM VITAE
+
+Trần Thị B
+Senior Frontend Developer
+
+THÔNG TIN LIÊN HỆ:
+Email: tranthib@email.com
+Điện thoại: 0987654321
+Địa chỉ: 456 Lê Văn Sỹ, Quận 3, TP.HCM
+
+KINH NGHIỆM LÀM VIỆC:
+2019-2023: Senior Frontend Developer tại TechCorp
+- Lead team phát triển frontend
+- Thiết kế architecture cho ứng dụng React
+- Mentoring junior developers
+- Code review và đảm bảo chất lượng code
+
+2017-2019: Frontend Developer tại StartupXYZ
+- Phát triển SPA với React.js và Vue.js
+- Tích hợp với các API backend
+- Tối ưu hóa SEO và performance
+
+HỌC VẤN:
+2013-2017: Cử nhân Khoa học Máy tính - Đại học Bách Khoa
+
+KỸ NĂNG:
+- React.js, Vue.js, Angular
+- TypeScript, JavaScript ES6+
+- Redux, Vuex, MobX
+- Webpack, Vite, Parcel
+- Jest, Cypress, Testing Library
+- Docker, CI/CD
+
+DỰ ÁN NỔI BẬT:
+- E-commerce Platform (2022): Lead frontend cho platform có 100k+ users
+- Admin Dashboard (2021): Xây dựng dashboard quản lý với real-time data
+- Mobile App (2020): Hybrid app với React Native
+
+CHỨNG CHỈ:
+- AWS Certified Developer (2022)
+- React Advanced Patterns (2021)
+- TypeScript Expert (2020)
+
+Đây là file CV mẫu cho testing - Senior level.

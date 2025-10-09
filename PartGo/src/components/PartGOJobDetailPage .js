@@ -1,70 +1,253 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import PartGOFooter from './PartGOFooter ';
-const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
+import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
+import { fetchJobById, applyToJob } from '../services/jobsAPI';
+import api from '../services/authAPI';
+import { useParams } from 'react-router-dom';
+const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp }) => {
+    const { id: routeId } = useParams();
+    const { logout } = useAuth();
+    const { success, error: showError, warning, info } = useNotification();
     const [showApplicationModal, setShowApplicationModal] = useState(false);
-    
-    // Mock data for job detail
-    const jobDetail = {
+    const [userCoords, setUserCoords] = useState(null);
+    const [geoError, setGeoError] = useState('');
+
+    useEffect(() => {
+        // Lấy vị trí hiện tại của người dùng (nếu cho phép)
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                },
+                (err) => {
+                    setGeoError('Không thể lấy vị trí: ' + err.message);
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        } else {
+            setGeoError('Trình duyệt không hỗ trợ định vị.');
+        }
+    }, []);
+
+    const [jobDetail, setJobDetail] = useState({
         id: jobId || 1,
-        title: 'Social Media Assistant',
-        company: 'Stripe',
-        location: 'Paris, France',
-        type: 'Full-Time',
-        logo: '💜',
-        color: '#635bff',
-        posted: 'July 31, 2021',
-        applications: 22,
+        title: 'Nhân viên bán hàng',
+        company: 'Siêu thị Hòa Lạc',
+        location: 'Hòa Lạc, Hà Nội',
+        type: 'Part-Time',
+        logo: '🛒',
+        color: '#ff6b35',
+        posted: '2 ngày trước',
+        applications: 15,
+        // Toạ độ điểm đến (ví dụ gần Hòa Lạc)
+        lat: 21.015,
+        lng: 105.526,
         about: {
-            employeeCount: 'July 31, 2021',
-            industry: 'July 31, 2021',
-            stage: 'July 31, 2021',
-            salary: '$75,000-100,000'
+            employeeCount: '15 tháng 12, 2024',
+            industry: '31 tháng 7, 2024',
+            stage: 'Part-Time',
+            salary: '25,000-35,000 VNĐ/giờ'
         },
-        description: `We're looking for a mid-level product designer to join our team. You would be working closely with one of our clients to launch products from concept to execution. This role requires someone that can work independently with little oversight as our company is fast-paced and we value people who can take direction and run with them.`,
+        description: `Chúng tôi đang tìm kiếm nhân viên bán hàng part time để tham gia đội ngũ của chúng tôi. Bạn sẽ làm việc trực tiếp với khách hàng để hỗ trợ họ tìm kiếm sản phẩm phù hợp và đảm bảo trải nghiệm mua sắm tốt nhất. Vị trí này yêu cầu người có thể làm việc độc lập với sự giám sát tối thiểu vì chúng tôi là một công ty năng động và đánh giá cao những người có thể tiếp nhận hướng dẫn và thực hiện hiệu quả.`,
         responsibilities: [
-            'Work on a wide range of projects and media, using various computer software to visualize and develop innovative graphic design that meets business goals',
-            'Obtain input from managers to ensure that designs meet organization requirements and brand/client goals',
-            'Create and maintain documentation and guidelines that define content where on site',
-            'Prepare and produce proposals and presentations for account pitches',
-            'Work with a wide range of media tools and programs'
+            'Hỗ trợ khách hàng tìm kiếm sản phẩm phù hợp và tư vấn về các sản phẩm có sẵn',
+            'Đảm bảo khu vực bán hàng luôn sạch sẽ, gọn gàng và sản phẩm được sắp xếp đúng vị trí',
+            'Xử lý thanh toán và giao dịch với khách hàng một cách chính xác và thân thiện',
+            'Theo dõi tồn kho và báo cáo tình hình bán hàng cho quản lý',
+            'Tham gia các chương trình đào tạo và cập nhật kiến thức về sản phẩm mới'
         ],
         whoYouAre: [
-            'You get energy from people and building the optimized, size experience',
-            'You have a natural eye for design and the requisites skills for translating it',
-            'You are design process and a strong culture across diverse areas',
-            'You are skilled with various user and associated',
-            'You are a strong reliable and creative problem-solving champion'
+            'Bạn có năng lượng tích cực và thích tương tác với mọi người',
+            'Bạn có kỹ năng giao tiếp tốt và khả năng thuyết phục khách hàng',
+            'Bạn có tinh thần trách nhiệm cao và có thể làm việc theo ca linh hoạt',
+            'Bạn có khả năng làm việc nhóm và hỗ trợ đồng nghiệp',
+            'Bạn là người đáng tin cậy và có tinh thần giải quyết vấn đề sáng tạo'
         ],
         niceToHaves: [
-            'Figma, Sketch',
-            'Previous work experience',
-            'Product management skills',
-            'Developing and marketing'
+            'Kinh nghiệm bán hàng trước đây',
+            'Kỹ năng sử dụng máy tính cơ bản',
+            'Khả năng giao tiếp tiếng Anh',
+            'Hiểu biết về các sản phẩm tiêu dùng'
         ],
         benefits: [
-            { title: 'Full Healthcare', desc: 'We believe in treating all staff as well so that you like to be', icon: '🏥' },
-            { title: 'Unlimited Vacation', desc: 'We believe you should have a flexible schedule and decide where you want', icon: '🏖️' },
-            { title: 'Skill Development', desc: 'We believe in always learning and want staff to attend workshops, conferences', icon: '📈' },
-            { title: 'Team Summits', desc: 'Once a year the entire company team takes an incredible trip together', icon: '🎯' },
-            { title: 'Remote Working', desc: 'You decide when you want to work from home or can start anytime anywhere', icon: '💻' },
-            { title: 'Commuter Benefits', desc: 'We\'re grateful for all the hard work you do and commuting shouldn\'t', icon: '🚌' },
-            { title: 'We give back to the community', desc: 'We\'ll donate to any organization and charity that you are passionate about', icon: '❤️' },
-            { title: 'Meals', desc: 'We believe you should never have to bring lunch to work if you don\'t want', icon: '🍕' }
+            { title: 'Bảo hiểm y tế', desc: 'Chúng tôi tin tưởng vào việc chăm sóc sức khỏe cho tất cả nhân viên', icon: '🏥' },
+            { title: 'Lịch làm việc linh hoạt', desc: 'Bạn có thể chọn ca làm việc phù hợp với lịch trình cá nhân', icon: '🏖️' },
+            { title: 'Phát triển kỹ năng', desc: 'Chúng tôi khuyến khích nhân viên tham gia các khóa đào tạo và hội thảo', icon: '📈' },
+            { title: 'Hoạt động tập thể', desc: 'Hàng năm công ty tổ chức các hoạt động team building thú vị', icon: '🎯' },
+            { title: 'Làm việc gần nhà', desc: 'Vị trí làm việc tại Hòa Lạc, thuận tiện cho việc di chuyển', icon: '💻' },
+            { title: 'Hỗ trợ đi lại', desc: 'Chúng tôi đánh giá cao sự chăm chỉ của bạn và hỗ trợ chi phí đi lại', icon: '🚌' },
+            { title: 'Đóng góp cộng đồng', desc: 'Chúng tôi tham gia các hoạt động từ thiện và đóng góp cho cộng đồng', icon: '❤️' },
+            { title: 'Bữa ăn', desc: 'Chúng tôi cung cấp bữa trưa miễn phí cho nhân viên', icon: '🍕' }
+        ],
+        ratingAverage: 4.5,
+        ratingCount: 32,
+        reviews: [
+            {
+                reviewer: 'Nguyễn Văn A',
+                rating: 5,
+                date: '3 ngày trước',
+                content: 'Môi trường làm việc thân thiện, ca linh hoạt, phù hợp cho sinh viên. Quản lý hỗ trợ nhiệt tình.'
+            },
+            {
+                reviewer: 'Trần Thị B',
+                rating: 4,
+                date: '1 tuần trước',
+                content: 'Khối lượng công việc ổn, giờ giấc rõ ràng. Có thể bận rộn vào cuối tuần nhưng bù lại lương theo giờ ổn.'
+            },
+            {
+                reviewer: 'Lê Minh C',
+                rating: 4,
+                date: '2 tuần trước',
+                content: 'Địa điểm thuận tiện tại Hòa Lạc, đồng nghiệp thân thiện. Nên tăng thêm phụ cấp gửi xe.'
+            }
         ],
         similarJobs: [
-            { title: 'Social Media Assistant', company: 'Revolut', location: 'Paris, France', tags: ['Design'], logo: '🟢', color: '#00d4aa' },
-            { title: 'Social Media Assistant', company: 'Spotify', location: 'New York, US', tags: ['Marketing'], logo: '🎵', color: '#1db954' },
-            { title: 'Brand Designer', company: 'Dropbox', location: 'San Francisco, USA', tags: ['Full-Time', 'Marketing'], logo: '📦', color: '#0061ff' },
-            { title: 'Brand Designer', company: 'Pinterest', location: 'San Francisco, USA', tags: ['Full-Time'], logo: '📌', color: '#bd081c' },
-            { title: 'Interactive Developer', company: 'Terraform', location: 'Hamburg, Germany', tags: ['Design'], logo: '⚡', color: '#623ce4' },
-            { title: 'Interactive Developer', company: 'ClassPass', location: 'Manchester, UK', tags: ['Marketing'], logo: '🏃', color: '#1c1c1c' },
-            { title: 'HR Manager', company: 'Reddit', location: 'London, Netherlands', tags: ['Design'], logo: '🔶', color: '#ff4500' },
-            { title: 'HR Manager', company: 'Webflow', location: 'London, Netherlands', tags: ['Marketing'], logo: '💙', color: '#146ef5' }
+            { title: 'Nhân viên phục vụ', company: 'Quán cà phê Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Phục vụ'], logo: '🍽️', color: '#00d4aa' },
+            { title: 'Gia sư Toán', company: 'Trung tâm Gia sư Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Giáo dục'], logo: '📚', color: '#1db954' },
+            { title: 'Nhân viên văn phòng', company: 'Công ty TNHH Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Part-Time', 'Văn phòng'], logo: '💼', color: '#0061ff' },
+            { title: 'Nhân viên giao hàng', company: 'Shopee Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Part-Time'], logo: '🚚', color: '#bd081c' },
+            { title: 'Nhân viên IT', company: 'Công ty Công nghệ Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Công nghệ'], logo: '💻', color: '#623ce4' },
+            { title: 'Nhân viên marketing', company: 'Công ty Du lịch Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Marketing'], logo: '📢', color: '#1c1c1c' },
+            { title: 'Nhân viên bảo vệ', company: 'Khu công nghiệp Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Bảo vệ'], logo: '🛡️', color: '#ff4500' },
+            { title: 'Nhân viên dịch vụ', company: 'Công ty Dịch vụ Hòa Lạc', location: 'Hòa Lạc, Hà Nội', tags: ['Dịch vụ'], logo: '🔧', color: '#146ef5' }
         ]
+    });
+
+    const [loading, setLoading] = useState(true);
+    const [errorText, setErrorText] = useState('');
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setLoading(true);
+                setErrorText('');
+                const id = jobId || routeId;
+                if (!id) return;
+                const j = await fetchJobById(id);
+                if (j && j._id) {
+                    // Tạo tên địa điểm hiển thị thân thiện
+                    const getDisplayLocation = (locationData, fallbackLocation = 'Hòa Lạc, Hà Nội') => {
+                        if (!locationData) return fallbackLocation;
+
+                        // Nếu có city, ưu tiên hiển thị city
+                        if (locationData.city) {
+                            return locationData.city;
+                        }
+
+                        // Nếu address ngắn (< 20 ký tự), hiển thị address
+                        if (locationData.address && locationData.address.length < 20) {
+                            return locationData.address;
+                        }
+
+                        // Nếu address dài, cố gắng rút gọn
+                        if (locationData.address) {
+                            const address = locationData.address;
+
+                            // Tìm tên khu vực chính (Hòa Lạc, Thạch Thất, etc.)
+                            const patterns = [
+                                /hòa lạc/i,
+                                /hoa lac/i,
+                                /thạch thất/i,
+                                /thach that/i,
+                                /tân xã/i,
+                                /tan xa/i,
+                                /cầu giấy/i,
+                                /cau giay/i,
+                                /đống đa/i,
+                                /dong da/i,
+                                /hoàn kiếm/i,
+                                /hoan kiem/i,
+                                /thanh xuân/i,
+                                /thanh xuan/i,
+                                /quận \d+/i,
+                                /quan \d+/i
+                            ];
+
+                            for (const pattern of patterns) {
+                                const match = address.match(pattern);
+                                if (match) {
+                                    return match[0];
+                                }
+                            }
+
+                            // Nếu không tìm thấy pattern, lấy phần đầu của address
+                            const parts = address.split(',');
+                            if (parts.length > 1) {
+                                return parts[0].trim();
+                            }
+
+                            return address;
+                        }
+
+                        return fallbackLocation;
+                    };
+
+                    setJobDetail(prev => ({
+                        ...prev,
+                        id: j._id,
+                        title: j.title || prev.title,
+                        company: j.company?.name || j.companyName || prev.company,
+                        location: getDisplayLocation(j.location, prev.location),
+                        fullAddress: j.location?.address || prev.fullAddress || '', // Lưu địa chỉ đầy đủ
+                        type: j.type || prev.type,
+                        logo: '💼',
+                        lat: j.location?.coordinates?.lat || prev.lat,
+                        lng: j.location?.coordinates?.lng || prev.lng,
+                        description: j.description || prev.description,
+                        about: {
+                            employeeCount: j.deadline ? new Date(j.deadline).toLocaleDateString('vi-VN') : prev.about.employeeCount,
+                            industry: j.createdAt ? new Date(j.createdAt).toLocaleDateString('vi-VN') : prev.about.industry,
+                            stage: j.type || prev.about.stage,
+                            salary: j.salary ? `${j.salary.min?.toLocaleString()}-${j.salary.max?.toLocaleString()} VNĐ/giờ` : prev.about.salary
+                        }
+                    }));
+                }
+            } catch (e) {
+                setErrorText(e?.message || 'Không tải được chi tiết công việc');
+            }
+            finally { setLoading(false); }
+        })();
+    }, [jobId]);
+
+    const openMapForJob = () => {
+        console.log('🗺️ Opening map for job:', {
+            lat: jobDetail.lat,
+            lng: jobDetail.lng,
+            userCoords,
+            fullJobDetail: jobDetail
+        });
+
+        if (jobDetail.lat && jobDetail.lng) {
+            const dest = `${jobDetail.lat},${jobDetail.lng}`;
+            if (userCoords) {
+                const origin = `${userCoords.lat},${userCoords.lng}`;
+                const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}&travelmode=driving`;
+                console.log('🗺️ Opening directions:', url);
+                window.open(url, '_blank');
+            } else {
+                const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest)}`;
+                console.log('🗺️ Opening location:', url);
+                window.open(url, '_blank');
+            }
+        } else {
+            console.error('❌ Không có tọa độ cho công việc này!', {
+                lat: jobDetail.lat,
+                lng: jobDetail.lng,
+                location: jobDetail.location
+            });
+            alert('Không có thông tin vị trí cho công việc này. Vui lòng liên hệ nhà tuyển dụng để biết thêm chi tiết.');
+        }
     };
 
     const ApplicationModal = () => {
+        const { user } = useAuth();
+        const [submitting, setSubmitting] = useState(false);
+        const [submitError, setSubmitError] = useState('');
+        const [cvFile, setCvFile] = useState(null);
+        const [cvUploading, setCvUploading] = useState(false);
+        const [cvUrl, setCvUrl] = useState('');
         const [formData, setFormData] = useState({
             fullName: '',
             email: '',
@@ -83,11 +266,82 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
             }));
         };
 
-        const handleSubmit = (e) => {
+        const handleCvSelect = (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!allowed.includes(file.type)) {
+                warning('Chỉ chấp nhận PDF, DOC, DOCX', 'Định dạng file không hợp lệ');
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                warning('File quá lớn (tối đa 10MB)', 'Kích thước file không hợp lệ');
+                return;
+            }
+            setCvFile(file);
+        };
+
+        const uploadCv = async () => {
+            if (!cvFile) return;
+            try {
+                setCvUploading(true);
+                const form = new FormData();
+                form.append('file', cvFile);
+                const resp = await api.post('/upload', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+                const path = resp?.data?.path;
+                if (path) {
+                    setCvUrl(path);
+                    success('Tải CV thành công', 'File đã được tải lên');
+                } else {
+                    showError('Tải CV thất bại', 'Lỗi tải file');
+                }
+            } catch (err) {
+                showError('Lỗi tải CV: ' + (err?.message || 'Unknown'), 'Lỗi hệ thống');
+            } finally {
+                setCvUploading(false);
+            }
+        };
+
+        const handleSubmit = async (e) => {
             e.preventDefault();
-            console.log('Application submitted:', formData);
-            alert('Application submitted successfully!');
-            setShowApplicationModal(false);
+            if (!user) {
+                warning('Vui lòng đăng nhập để ứng tuyển.', 'Cần đăng nhập');
+                if (onShowLogin) onShowLogin();
+                return;
+            }
+            try {
+                setSubmitting(true);
+                setSubmitError('');
+                const isValidObjectId = typeof jobDetail.id === 'string' && /^[a-fA-F0-9]{24}$/.test(jobDetail.id);
+                if (!isValidObjectId) {
+                    setSubmitting(false);
+                    setSubmitError('Công việc demo không thể ứng tuyển. Hãy chọn công việc từ danh sách tải từ hệ thống.');
+                    warning('Công việc demo không thể ứng tuyển. Vui lòng quay lại trang Tìm việc và chọn một công việc thật (không phải dữ liệu mẫu).', 'Không thể ứng tuyển');
+                    return;
+                }
+                await applyToJob({
+                    jobId: jobDetail.id,
+                    coverLetter: formData.additionalInfo || 'Ứng tuyển nhanh từ PartGO',
+                    cvUrl: cvUrl || undefined
+                });
+
+                // Đóng modal trước
+                setShowApplicationModal(false);
+                setFormData({ additionalInfo: '' });
+                setCvFile(null);
+                setCvUrl('');
+
+                // Hiện thông báo thành công sau khi đóng modal
+                success('Ứng tuyển thành công!', 'Đơn ứng tuyển đã được gửi');
+            } catch (err) {
+                console.error('Apply job error:', err);
+                console.error('Error response:', err?.response?.data);
+                const msg = err?.response?.data?.message || err?.message || 'Lỗi không xác định';
+                setSubmitError(String(msg));
+                showError('Ứng tuyển thất bại: ' + String(msg), 'Lỗi ứng tuyển');
+            } finally {
+                setSubmitting(false);
+            }
         };
 
         return (
@@ -97,7 +351,7 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                         {/* Modal Header */}
                         <div className="modal-header border-0 pb-2">
                             <div className="d-flex align-items-center">
-                                <div 
+                                <div
                                     className="me-3 d-flex align-items-center justify-content-center rounded-3"
                                     style={{
                                         width: '40px',
@@ -109,33 +363,33 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                                     <span style={{ filter: 'grayscale(100%) brightness(0) invert(1)' }}>🏠</span>
                                 </div>
                                 <div>
-                                    <h5 className="modal-title fw-bold mb-0">Social Media Assistant</h5>
-                                    <small className="text-muted">Remote • Paris, France • Full-Time</small>
+                                    <h5 className="modal-title fw-bold mb-0">Nhân viên bán hàng</h5>
+                                    <small className="text-muted">Hòa Lạc, Hà Nội • Part-Time</small>
                                 </div>
                             </div>
-                            <button 
-                                type="button" 
-                                className="btn-close" 
+                            <button
+                                type="button"
+                                className="btn-close"
                                 onClick={() => setShowApplicationModal(false)}
                             ></button>
                         </div>
 
                         {/* Modal Body */}
                         <div className="modal-body px-4">
-                            <h6 className="fw-bold mb-3">Submit your application</h6>
-                            <p className="text-muted small mb-4">The following is required and will only be shared with Homer.</p>
+                            <h6 className="fw-bold mb-3">Gửi đơn ứng tuyển</h6>
+                            <p className="text-muted small mb-4">Thông tin sau đây là bắt buộc và chỉ được chia sẻ với Siêu thị Hòa Lạc.</p>
 
                             <form onSubmit={handleSubmit}>
                                 {/* Full Name */}
                                 <div className="mb-3">
-                                    <label className="form-label fw-medium">Full name</label>
-                                    <input 
-                                        type="text" 
+                                    <label className="form-label fw-medium">Họ và tên</label>
+                                    <input
+                                        type="text"
                                         className="form-control"
                                         name="fullName"
                                         value={formData.fullName}
                                         onChange={handleInputChange}
-                                        placeholder="Enter your full name"
+                                        placeholder="Nhập họ và tên của bạn"
                                         style={{ borderRadius: '8px', border: '1px solid #e9ecef', padding: '12px' }}
                                         required
                                     />
@@ -143,14 +397,14 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                                 {/* Email */}
                                 <div className="mb-3">
-                                    <label className="form-label fw-medium">Email address</label>
-                                    <input 
-                                        type="email" 
+                                    <label className="form-label fw-medium">Địa chỉ email</label>
+                                    <input
+                                        type="email"
                                         className="form-control"
                                         name="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        placeholder="Enter your email address"
+                                        placeholder="Nhập địa chỉ email của bạn"
                                         style={{ borderRadius: '8px', border: '1px solid #e9ecef', padding: '12px' }}
                                         required
                                     />
@@ -158,60 +412,60 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                                 {/* Phone */}
                                 <div className="mb-3">
-                                    <label className="form-label fw-medium">Phone number</label>
-                                    <input 
-                                        type="tel" 
+                                    <label className="form-label fw-medium">Số điện thoại</label>
+                                    <input
+                                        type="tel"
                                         className="form-control"
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleInputChange}
-                                        placeholder="Enter your phone number"
+                                        placeholder="Nhập số điện thoại của bạn"
                                         style={{ borderRadius: '8px', border: '1px solid #e9ecef', padding: '12px' }}
                                     />
                                 </div>
 
                                 {/* Current Job Title */}
                                 <div className="mb-3">
-                                    <label className="form-label fw-medium">Current or previous job title</label>
-                                    <input 
-                                        type="text" 
+                                    <label className="form-label fw-medium">Chức danh công việc hiện tại hoặc trước đây</label>
+                                    <input
+                                        type="text"
                                         className="form-control"
                                         name="currentJobTitle"
                                         value={formData.currentJobTitle}
                                         onChange={handleInputChange}
-                                        placeholder="What's your current or previous job title?"
+                                        placeholder="Chức danh công việc hiện tại hoặc trước đây của bạn là gì?"
                                         style={{ borderRadius: '8px', border: '1px solid #e9ecef', padding: '12px' }}
                                     />
                                 </div>
 
                                 {/* Links Section */}
                                 <div className="mb-4">
-                                    <h6 className="fw-bold mb-3">LINKS</h6>
-                                    
+                                    <h6 className="fw-bold mb-3">LIÊN KẾT</h6>
+
                                     {/* LinkedIn */}
                                     <div className="mb-3">
-                                        <label className="form-label fw-medium">LinkedIn URL</label>
-                                        <input 
-                                            type="url" 
+                                        <label className="form-label fw-medium">URL LinkedIn</label>
+                                        <input
+                                            type="url"
                                             className="form-control"
                                             name="linkedinUrl"
                                             value={formData.linkedinUrl}
                                             onChange={handleInputChange}
-                                            placeholder="Link to your LinkedIn URL"
+                                            placeholder="Liên kết đến LinkedIn của bạn"
                                             style={{ borderRadius: '8px', border: '1px solid #e9ecef', padding: '12px' }}
                                         />
                                     </div>
 
                                     {/* Portfolio */}
                                     <div className="mb-3">
-                                        <label className="form-label fw-medium">Portfolio URL</label>
-                                        <input 
-                                            type="url" 
+                                        <label className="form-label fw-medium">URL Portfolio</label>
+                                        <input
+                                            type="url"
                                             className="form-control"
                                             name="portfolioUrl"
                                             value={formData.portfolioUrl}
                                             onChange={handleInputChange}
-                                            placeholder="Link to your portfolio URL"
+                                            placeholder="Liên kết đến portfolio của bạn"
                                             style={{ borderRadius: '8px', border: '1px solid #e9ecef', padding: '12px' }}
                                         />
                                     </div>
@@ -219,17 +473,17 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                                 {/* Additional Information */}
                                 <div className="mb-4">
-                                    <label className="form-label fw-medium">Additional information</label>
-                                    <textarea 
+                                    <label className="form-label fw-medium">Thông tin bổ sung</label>
+                                    <textarea
                                         className="form-control"
                                         name="additionalInfo"
                                         value={formData.additionalInfo}
                                         onChange={handleInputChange}
                                         rows="4"
-                                        placeholder="Add a cover letter or anything else you want to share."
-                                        style={{ 
-                                            borderRadius: '8px', 
-                                            border: '1px solid #e9ecef', 
+                                        placeholder="Thêm thư xin việc hoặc bất kỳ thông tin nào khác bạn muốn chia sẻ."
+                                        style={{
+                                            borderRadius: '8px',
+                                            border: '1px solid #e9ecef',
                                             padding: '12px',
                                             resize: 'vertical',
                                             minHeight: '100px'
@@ -256,46 +510,57 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                                 {/* Resume Upload */}
                                 <div className="mb-4">
-                                    <label className="form-label fw-medium">Attach your resume</label>
-                                    <div 
+                                    <label className="form-label fw-medium">Đính kèm CV của bạn</label>
+                                    <div
                                         className="border border-dashed p-3 text-center"
-                                        style={{ 
-                                            borderRadius: '8px', 
+                                        style={{
+                                            borderRadius: '8px',
                                             borderColor: '#ff6b35',
                                             backgroundColor: '#fff8f5'
                                         }}
                                     >
                                         <div className="text-center">
                                             <span style={{ color: '#ff6b35', fontSize: '1.2rem' }}>📎</span>
-                                            <span className="text-muted ms-2">Attach Resume/CV</span>
+                                            <span className="text-muted ms-2">{cvFile ? cvFile.name : 'Đính kèm CV/Resume'}</span>
+                                        </div>
+                                        <div className="mt-2 d-flex justify-content-center gap-2">
+                                            <input type="file" accept=".pdf,.doc,.docx" id="apply-cv" style={{ display: 'none' }} onChange={handleCvSelect} />
+                                            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => document.getElementById('apply-cv').click()}>Chọn tệp</button>
+                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={uploadCv} disabled={!cvFile || cvUploading}>{cvUploading ? 'Đang tải...' : 'Tải lên'}</button>
+                                            {cvUrl && <a className="btn btn-sm btn-outline-success" href={cvUrl} target="_blank" rel="noreferrer">Xem CV</a>}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Submit Button */}
-                                <button 
-                                    type="submit" 
+                                <button
+                                    type="submit"
                                     className="btn w-100 py-3 fw-bold"
-                                    style={{ 
-                                        backgroundColor: '#ff6b35', 
-                                        color: 'white', 
+                                    style={{
+                                        backgroundColor: '#ff6b35',
+                                        color: 'white',
                                         borderRadius: '8px',
                                         border: 'none',
                                         fontSize: '16px'
                                     }}
+                                    disabled={submitting}
                                 >
-                                    Submit Application
+                                    {submitting ? 'Đang gửi...' : 'Gửi đơn ứng tuyển'}
                                 </button>
+
+                                {submitError && (
+                                    <p className="text-danger small text-center mt-2">{submitError}</p>
+                                )}
 
                                 {/* Terms */}
                                 <p className="text-muted small text-center mt-3 mb-0">
-                                    By sending this request you can confirm that you accept our{' '}
+                                    Bằng cách gửi yêu cầu này, bạn xác nhận rằng chấp nhận{' '}
                                     <a href="#" className="text-decoration-none" style={{ color: '#ff6b35' }}>
-                                        Terms of Service
+                                        Điều khoản dịch vụ
                                     </a>{' '}
-                                    and{' '}
+                                    và{' '}
                                     <a href="#" className="text-decoration-none" style={{ color: '#ff6b35' }}>
-                                        Privacy Policy
+                                        Chính sách bảo mật
                                     </a>
                                 </p>
                             </form>
@@ -317,7 +582,13 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
             <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
 
                 {/* Header */}
-                <Header/>
+                <Header
+                    onOpenCv={() => window.location.href = '/profile/cv'}
+                    onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
+                    onShowLogin={onShowLogin}
+                    onShowSignUp={onShowSignUp}
+                    onLogout={() => logout(() => window.location.href = '/')}
+                />
                 {/* Main Content */}
                 <div className="container py-4">
 
@@ -330,7 +601,7 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                                     onClick={onBackToJobs}
                                     style={{ color: '#6c757d', border: 'none', background: 'none' }}
                                 >
-                                    Home
+                                    Trang chủ
                                 </button>
                             </li>
                             <li className="breadcrumb-item">
@@ -339,11 +610,11 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                                     onClick={onBackToJobs}
                                     style={{ color: '#6c757d', border: 'none', background: 'none' }}
                                 >
-                                    Find Jobs
+                                    Tìm việc làm
                                 </button>
                             </li>
                             <li className="breadcrumb-item active" aria-current="page" style={{ color: '#ff6b35' }}>
-                                Social Media Assistant
+                                Nhân viên bán hàng
                             </li>
                         </ol>
                     </nav>
@@ -379,27 +650,37 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                                             </p>
                                         </div>
                                     </div>
-                                    <button
-                                        className="btn px-4 py-3"
-                                        onClick={() => setShowApplicationModal(true)}
-                                        style={{
-                                            backgroundColor: '#ff6b35',
-                                            color: 'white',
-                                            fontWeight: '600',
-                                            fontSize: '16px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            minWidth: '100px'
-                                        }}
-                                    >
-                                        Apply
-                                    </button>
+                                    <div className="d-flex gap-2">
+                                        <button
+                                            className="btn px-4 py-3"
+                                            onClick={() => setShowApplicationModal(true)}
+                                            style={{
+                                                backgroundColor: '#ff6b35',
+                                                color: 'white',
+                                                fontWeight: '600',
+                                                fontSize: '16px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                minWidth: '100px'
+                                            }}
+                                        >
+                                            Ứng tuyển
+                                        </button>
+                                        <button
+                                            className="btn btn-outline-secondary px-4 py-3"
+                                            onClick={openMapForJob}
+                                            title={geoError ? geoError : 'Xem bản đồ từ vị trí hiện tại đến nơi làm việc'}
+                                            style={{ borderRadius: '8px', minWidth: '100px' }}
+                                        >
+                                            Xem bản đồ
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Job Description */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Description</h3>
+                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Mô tả công việc</h3>
                                 <p className="text-muted" style={{ lineHeight: '1.6' }}>
                                     {jobDetail.description}
                                 </p>
@@ -407,7 +688,7 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                             {/* Responsibilities */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Responsibilities</h3>
+                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Trách nhiệm</h3>
                                 <ul className="list-unstyled">
                                     {jobDetail.responsibilities.map((item, index) => (
                                         <li key={index} className="d-flex mb-3">
@@ -420,7 +701,7 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                             {/* Who You Are */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Who You Are</h3>
+                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Bạn là ai</h3>
                                 <ul className="list-unstyled">
                                     {jobDetail.whoYouAre.map((item, index) => (
                                         <li key={index} className="d-flex mb-3">
@@ -433,7 +714,7 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                             {/* Nice-To-Haves */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Nice-To-Haves</h3>
+                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Ưu tiên có</h3>
                                 <ul className="list-unstyled">
                                     {jobDetail.niceToHaves.map((item, index) => (
                                         <li key={index} className="d-flex mb-3">
@@ -446,8 +727,8 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                             {/* Perks & Benefits */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-4" style={{ color: '#2c3e50' }}>Perks & Benefits</h3>
-                                <p className="text-muted mb-4">This job comes with several perks and benefits</p>
+                                <h3 className="fw-bold mb-4" style={{ color: '#2c3e50' }}>Phúc lợi & Lợi ích</h3>
+                                <p className="text-muted mb-4">Công việc này đi kèm với nhiều phúc lợi và lợi ích</p>
 
                                 <div className="row g-4">
                                     {jobDetail.benefits.map((benefit, index) => (
@@ -463,6 +744,41 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                                             </div>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+
+                            {/* Reviews */}
+                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h3 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>Đánh giá về công việc này</h3>
+                                    <div className="d-flex align-items-center">
+                                        <span className="me-2" style={{ color: '#ff6b35', fontSize: '18px' }}>★</span>
+                                        <span className="fw-bold" style={{ color: '#2c3e50' }}>{jobDetail.ratingAverage.toFixed(1)}</span>
+                                        <span className="text-muted ms-2">({jobDetail.ratingCount} đánh giá)</span>
+                                    </div>
+                                </div>
+
+                                <div className="list-group list-group-flush">
+                                    {jobDetail.reviews.slice(0, 3).map((review, index) => (
+                                        <div key={index} className="list-group-item px-0">
+                                            <div className="d-flex justify-content-between align-items-start mb-1">
+                                                <div>
+                                                    <h6 className="fw-bold mb-1" style={{ color: '#2c3e50' }}>{review.reviewer}</h6>
+                                                    <div>
+                                                        {Array.from({ length: 5 }).map((_, i) => (
+                                                            <span key={i} style={{ color: i < review.rating ? '#ff6b35' : '#e0e0e0' }}>★</span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <small className="text-muted">{review.date}</small>
+                                            </div>
+                                            <p className="text-muted mb-0" style={{ lineHeight: '1.6' }}>{review.content}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="text-end mt-3">
+                                    <button className="btn btn-sm btn-outline-secondary">Xem tất cả đánh giá</button>
                                 </div>
                             </div>
 
@@ -484,12 +800,12 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                                     </div>
                                     <div className="flex-grow-1">
                                         <h5 className="fw-bold mb-1">{jobDetail.company}</h5>
-                                        <p className="text-muted small mb-0">About Stripe - 4</p>
+                                        <p className="text-muted small mb-0">Về Siêu thị Hòa Lạc - 4</p>
                                     </div>
                                 </div>
                                 <div className="mt-3">
                                     <p className="text-muted small">
-                                        Stripe is a technology company that builds economic infrastructure for the internet. Businesses of every size from new
+                                        Siêu thị Hòa Lạc là một chuỗi siêu thị uy tín tại Hòa Lạc, Hà Nội. Chúng tôi cung cấp các sản phẩm chất lượng cao và dịch vụ khách hàng tốt nhất.
                                     </p>
                                 </div>
                             </div>
@@ -501,52 +817,60 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
 
                             {/* About this role */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>About this role</h5>
+                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Về vị trí này</h5>
                                 <div className="mb-3">
                                     <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Apply Before</span>
+                                        <span className="text-muted">Ứng tuyển trước</span>
                                         <span className="fw-medium">{jobDetail.about.employeeCount}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Job Posted On</span>
+                                        <span className="text-muted">Đăng tuyển ngày</span>
                                         <span className="fw-medium">{jobDetail.about.industry}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Job Type</span>
+                                        <span className="text-muted">Loại công việc</span>
                                         <span className="fw-medium">{jobDetail.about.stage}</span>
                                     </div>
-                                    <div className="d-flex justify-content-between">
-                                        <span className="text-muted">Salary</span>
+                                    <div className="d-flex justify-content-between mb-2">
+                                        <span className="text-muted">Mức lương</span>
                                         <span className="fw-medium">{jobDetail.about.salary}</span>
                                     </div>
+                                    {jobDetail.fullAddress && (
+                                        <div className="d-flex justify-content-between">
+                                            <span className="text-muted">Địa chỉ</span>
+                                            <span className="fw-medium text-end" style={{ maxWidth: '60%', fontSize: '14px' }}>
+                                                {jobDetail.fullAddress}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
                             {/* Categories */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Categories</h5>
+                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Danh mục</h5>
                                 <div className="d-flex flex-wrap gap-2">
                                     <span className="badge px-3 py-2" style={{ backgroundColor: '#fff3cd', color: '#856404', borderRadius: '20px' }}>
                                         Marketing
                                     </span>
                                     <span className="badge px-3 py-2" style={{ backgroundColor: '#e1f5fe', color: '#0277bd', borderRadius: '20px' }}>
-                                        Design
+                                        Bán hàng
                                     </span>
                                 </div>
                             </div>
 
                             {/* Required Skills */}
                             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Required Skills</h5>
+                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Kỹ năng yêu cầu</h5>
                                 <div className="d-flex flex-wrap gap-2">
                                     <span className="badge px-3 py-2" style={{ backgroundColor: '#f0f9f0', color: '#2e7d32', borderRadius: '20px' }}>
-                                        Social Media Marketing
+                                        Bán hàng
                                     </span>
                                     <span className="badge px-3 py-2" style={{ backgroundColor: '#e8f5e8', color: '#1b5e20', borderRadius: '20px' }}>
-                                        English
+                                        Giao tiếp
                                     </span>
                                     <span className="badge px-3 py-2" style={{ backgroundColor: '#fff8e1', color: '#f57600', borderRadius: '20px' }}>
-                                        Copy Writing
+                                        Tư vấn khách hàng
                                     </span>
                                 </div>
                             </div>
@@ -557,13 +881,13 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs }) => {
                     {/* Similar Jobs */}
                     <div className="mt-5">
                         <div className="d-flex justify-content-between align-items-center mb-4">
-                            <h3 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>Similar Jobs</h3>
+                            <h3 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>Việc làm tương tự</h3>
                             <button
                                 className="btn btn-link text-decoration-none p-0"
                                 onClick={onBackToJobs}
                                 style={{ color: '#ff6b35' }}
                             >
-                                Show all jobs →
+                                Xem tất cả việc làm →
                             </button>
                         </div>
 

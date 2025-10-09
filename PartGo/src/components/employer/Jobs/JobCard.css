@@ -1,0 +1,289 @@
+@import "../../../styles/employer-design-system.css";
+
+/* ==================== MODERN JOB CARD ==================== */
+.job-card-employer {
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  transition: all var(--transition-base);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Modern Gradient Border Effect */
+.job-card-employer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--employer-primary),
+    var(--employer-secondary)
+  );
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+}
+
+/* Glass Effect Overlay */
+.job-card-employer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+/* Enhanced Hover Effects */
+.job-card-employer:hover {
+  box-shadow: var(--shadow-2xl);
+  transform: translateY(-8px);
+  border-color: var(--employer-primary-light);
+}
+
+.job-card-employer:hover::before {
+  transform: scaleX(1);
+}
+
+.job-card-employer:hover::after {
+  opacity: 1;
+}
+
+.job-card-employer.selected {
+  border-color: var(--employer-primary);
+  background: var(--employer-primary-lighter);
+}
+
+/* List View */
+.job-card-employer.list {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.job-card-employer.list .job-card-header {
+  flex: 1;
+}
+
+.job-card-employer.list .job-card-stats {
+  flex-direction: row;
+  gap: var(--space-xl);
+}
+
+.job-card-employer.list .job-card-actions {
+  flex-direction: row;
+}
+
+/* Checkbox */
+.job-card-checkbox {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+}
+
+.job-card-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--employer-primary);
+}
+
+/* Header */
+.job-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-right: 40px; /* Space for checkbox */
+}
+
+.job-card-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.job-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.job-card-badges {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Meta Info */
+.job-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.job-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.meta-icon {
+  font-size: 16px;
+}
+
+/* Modern Stats Section */
+.job-card-stats {
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  position: relative;
+}
+
+.job-card-stats::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+.job-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.job-stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--employer-primary);
+  background: linear-gradient(
+    135deg,
+    var(--employer-primary),
+    var(--employer-secondary)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.job-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dates */
+.job-card-dates {
+  display: flex;
+  gap: var(--space-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  padding: var(--space-sm) 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.job-date-item {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.date-label {
+  font-weight: var(--font-weight-medium);
+}
+
+.date-value {
+  color: var(--text-primary);
+}
+
+/* Modern Actions Section */
+.job-card-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border-light);
+}
+
+.job-card-actions button {
+  flex: 1;
+  min-width: fit-content;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.job-card-actions button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left var(--transition-base);
+}
+
+.job-card-actions button:hover::before {
+  left: 100%;
+}
+
+.job-card-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .job-card-employer.list {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .job-card-stats {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .job-card-actions {
+    flex-direction: column;
+  }
+
+  .job-card-actions button {
+    width: 100%;
+  }
+}

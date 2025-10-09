@@ -1,0 +1,260 @@
+.application-management {
+  padding: 24px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* Header */
+.application-management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #000000;
+  margin: 0 0 8px 0;
+}
+
+.header-content p {
+  color: #000000;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.header-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #3b82f6;
+  line-height: 1;
+}
+
+.stat-label {
+  display: block;
+  font-size: 14px;
+  color: #000000;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* View Controls */
+.view-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.view-mode {
+  display: flex;
+  gap: 8px;
+}
+
+.view-btn {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.view-btn:hover {
+  background: #f1f5f9;
+}
+
+.view-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.select-all label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.select-all input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+/* Applications Container */
+.applications-container {
+  margin-top: 24px;
+}
+
+.applications-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.applications-container.cards .applications-grid {
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+.applications-container.table .applications-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.empty-state p {
+  color: #000000;
+  font-size: 16px;
+  margin: 0;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 600;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  color: #64748b;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .application-management {
+    padding: 16px;
+  }
+
+  .application-management-header {
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .header-stats {
+    justify-content: space-around;
+    gap: 16px;
+  }
+
+  .view-controls {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .applications-container.cards .applications-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .application-management {
+    background: #0f172a;
+  }
+
+  .application-management-header,
+  .view-controls,
+  .empty-state,
+  .loading-container {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .header-content h1,
+  .empty-state h3 {
+    color: #f1f5f9;
+  }
+
+  .header-content p,
+  .stat-label,
+  .select-all label,
+  .empty-state p,
+  .loading-container p {
+    color: #94a3b8;
+  }
+
+  .view-btn {
+    background: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+
+  .view-btn:hover {
+    background: #475569;
+  }
+}

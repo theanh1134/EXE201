@@ -1,0 +1,364 @@
+/* Employer Layout */
+.employer-layout {
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.employer-main {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 80px); /* Adjust based on header height */
+}
+
+/* Sidebar */
+.employer-sidebar {
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.employer-sidebar.collapsed {
+  width: 80px;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100px;
+}
+
+.company-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.company-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.company-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.company-details p {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.2;
+}
+
+.sidebar-toggle {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.nav-item {
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  color: #6b7280;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.nav-item.active {
+  background: #eff6ff;
+  color: #2563eb;
+  border-right: 3px solid #2563eb;
+}
+
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #2563eb;
+}
+
+.nav-icon {
+  font-size: 20px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.nav-description {
+  display: block;
+  font-size: 12px;
+  opacity: 0.7;
+  line-height: 1.2;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-action-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.quick-action-btn.primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.quick-action-btn.primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.quick-action-btn.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.quick-action-btn.secondary:hover {
+  background: #e5e7eb;
+}
+
+/* Main Content */
+.employer-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  min-width: 0;
+}
+
+.employer-content.expanded {
+  margin-left: 0;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 32px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Collapsed Sidebar Styles */
+.employer-sidebar.collapsed .company-info {
+  justify-content: center;
+}
+
+.employer-sidebar.collapsed .nav-item {
+  padding: 16px;
+  justify-content: center;
+}
+
+.employer-sidebar.collapsed .sidebar-footer {
+  padding: 16px;
+}
+
+.employer-sidebar.collapsed .quick-actions {
+  align-items: center;
+}
+
+.employer-sidebar.collapsed .quick-action-btn {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 12px;
+}
+
+.employer-sidebar.collapsed .quick-action-btn span {
+  font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .employer-sidebar {
+    width: 240px;
+  }
+
+  .content-wrapper {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .employer-sidebar {
+    position: fixed;
+    left: -280px;
+    top: 80px;
+    height: calc(100vh - 80px);
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .employer-sidebar.open {
+    left: 0;
+  }
+
+  .employer-content {
+    margin-left: 0;
+  }
+
+  .content-wrapper {
+    padding: 16px;
+  }
+}
+
+/* Force Light Mode - Override Dark Mode */
+.employer-layout {
+  background: #ffffff !important;
+}
+
+.employer-content {
+  background: #ffffff !important;
+}
+
+.content-wrapper {
+  background: #ffffff !important;
+}
+
+.employer-sidebar {
+  background: #ffffff !important;
+  border-right-color: #e5e7eb !important;
+}
+
+.sidebar-header {
+  border-bottom-color: #e5e7eb !important;
+}
+
+.company-details h3 {
+  color: #1f2937 !important;
+}
+
+.company-details p {
+  color: #6b7280 !important;
+}
+
+.sidebar-toggle {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+}
+
+.sidebar-toggle:hover {
+  background: #e5e7eb !important;
+  color: #374151 !important;
+}
+
+.nav-item {
+  color: #6b7280 !important;
+}
+
+.nav-item:hover {
+  background: #f9fafb !important;
+  color: #374151 !important;
+}
+
+.nav-item.active {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+}
+
+.sidebar-footer {
+  border-top-color: #e5e7eb !important;
+}
+
+.quick-action-btn.secondary {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+}
+
+.quick-action-btn.secondary:hover {
+  background: #e5e7eb !important;
+}

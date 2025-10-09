@@ -1,0 +1,34 @@
+CURRICULUM VITAE
+
+Nguyễn Văn A
+Frontend Developer
+
+THÔNG TIN LIÊN HỆ:
+Email: nguyenvana@email.com
+Điện thoại: 0901234567
+Địa chỉ: 123 Nguyễn Văn Cừ, Quận 5, TP.HCM
+
+KINH NGHIỆM LÀM VIỆC:
+2021-2023: Frontend Developer tại ABC Company
+- Phát triển giao diện web với React.js
+- Tối ưu hóa hiệu suất ứng dụng
+- Làm việc với team backend để tích hợp API
+
+2020-2021: Junior Developer tại XYZ Startup
+- Học hỏi và phát triển kỹ năng lập trình
+- Tham gia các dự án nhỏ
+
+HỌC VẤN:
+2016-2020: Cử nhân Công nghệ Thông tin - Đại học ABC
+
+KỸ NĂNG:
+- React.js, JavaScript, HTML, CSS
+- Redux, Context API
+- RESTful API
+- Git, GitHub
+
+CHỨNG CHỈ:
+- React Developer Certificate (2021)
+- JavaScript Advanced Certificate (2020)
+
+Đây là file CV mẫu cho testing.

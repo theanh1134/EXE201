@@ -1,0 +1,255 @@
+.application-trends-chart {
+    padding: 24px;
+}
+
+/* Header */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.header-content h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.trend-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.trend-icon {
+    font-size: 16px;
+}
+
+.trend-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.chart-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px 12px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-btn:hover {
+    background: #f8fafc;
+}
+
+.view-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Chart Container */
+.chart-container {
+    margin-bottom: 20px;
+}
+
+/* Line Chart */
+.line-chart {
+    height: 200px;
+    margin-bottom: 12px;
+}
+
+.chart-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Bar Chart */
+.bar-chart {
+    height: 200px;
+    margin-bottom: 12px;
+}
+
+.bars-container {
+    display: flex;
+    align-items: end;
+    height: 100%;
+    gap: 2px;
+    padding: 0 8px;
+}
+
+.bar-item {
+    flex: 1;
+    display: flex;
+    align-items: end;
+    height: 100%;
+}
+
+.bar {
+    width: 100%;
+    min-height: 4px;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.bar:hover {
+    opacity: 0.8;
+    transform: scaleY(1.05);
+}
+
+.bar-value {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 600;
+    color: #374151;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.bar:hover .bar-value {
+    opacity: 1;
+}
+
+/* X-axis */
+.x-axis {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 8px;
+    margin-top: 8px;
+}
+
+.x-label {
+    font-size: 11px;
+    color: #64748b;
+    text-align: center;
+}
+
+/* Stats */
+.chart-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .application-trends-chart {
+        padding: 20px;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .chart-controls {
+        justify-content: center;
+    }
+    
+    .line-chart,
+    .bar-chart {
+        height: 150px;
+    }
+    
+    .chart-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .x-axis {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .x-label {
+        font-size: 10px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .header-content h3 {
+        color: #f1f5f9;
+    }
+    
+    .view-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #94a3b8;
+    }
+    
+    .view-btn:hover {
+        background: #475569;
+    }
+    
+    .view-btn.active {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .bar-value {
+        color: #e2e8f0;
+    }
+    
+    .x-label {
+        color: #94a3b8;
+    }
+    
+    .chart-stats {
+        background: #334155;
+        border-color: #475569;
+    }
+    
+    .stat-label {
+        color: #94a3b8;
+    }
+    
+    .stat-value {
+        color: #f1f5f9;
+    }
+}

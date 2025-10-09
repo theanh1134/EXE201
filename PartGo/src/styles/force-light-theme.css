@@ -1,0 +1,610 @@
+/* ==================== FORCE LIGHT THEME GLOBAL ==================== */
+/* Override all dark mode styles to ensure consistent light theme across all pages */
+
+/* Global Background Override */
+body,
+html,
+#root,
+.App {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+/* ==================== EMPLOYER LAYOUT ==================== */
+.employer-layout,
+.employer-content,
+.content-wrapper {
+  background: #ffffff !important;
+}
+
+.employer-sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid #e5e7eb !important;
+}
+
+.sidebar-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.company-details h3,
+.sidebar-nav-item {
+  color: #1f2937 !important;
+}
+
+.company-details p {
+  color: #6b7280 !important;
+}
+
+/* ==================== APPLICATION MANAGEMENT ==================== */
+.application-management {
+  background: #ffffff !important;
+}
+
+.application-management-header,
+.view-controls,
+.application-filters,
+.empty-state,
+.loading-container {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.header-content h1,
+.empty-state h3,
+.filters-title h3 {
+  color: #1f2937 !important;
+}
+
+.header-content p,
+.stat-label,
+.select-all label,
+.empty-state p,
+.loading-container p,
+.result-count {
+  color: #6b7280 !important;
+}
+
+.view-btn {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.view-btn:hover {
+  background: #f3f4f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+.view-btn.active {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* ==================== APPLICATION CARDS ==================== */
+.application-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.card-header {
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.applicant-details h4,
+.job-title,
+.meta-value,
+.date-text {
+  color: #1f2937 !important;
+}
+
+.applicant-details p,
+.job-location,
+.meta-label,
+.time-ago {
+  color: #6b7280 !important;
+}
+
+.cover-letter-preview {
+  background: #f3f4f6 !important;
+  color: #1f2937 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.card-footer {
+  background: #f9fafb !important;
+  border-top: 1px solid #e5e7eb !important;
+}
+
+/* ==================== FILTERS ==================== */
+.filters-header {
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.filter-group label {
+  color: #1f2937 !important;
+}
+
+.filter-group select,
+.search-input input {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.filter-group select:focus,
+.search-input input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.search-icon {
+  color: #6b7280 !important;
+}
+
+.quick-filters {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.quick-filters-label {
+  color: #6b7280 !important;
+}
+
+.quick-filter-btn {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.quick-filter-btn:hover,
+.quick-filter-btn.active {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* ==================== COMPANY PROFILE ==================== */
+.company-profile {
+  background: #ffffff !important;
+}
+
+.profile-header,
+.profile-tabs,
+.profile-content {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.company-info h1,
+.section-header h2 {
+  color: #1f2937 !important;
+}
+
+.company-industry {
+  color: #3b82f6 !important;
+}
+
+.meta-item,
+.section-header p {
+  color: #6b7280 !important;
+}
+
+.preview-btn {
+  background: #ffffff !important;
+  color: #6b7280 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.preview-btn:hover {
+  background: #f3f4f6 !important;
+}
+
+.tab-btn {
+  color: #6b7280 !important;
+}
+
+.tab-btn:hover {
+  background: #f3f4f6 !important;
+  color: #1f2937 !important;
+}
+
+.tab-btn.active {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* ==================== DASHBOARD COMPONENTS ==================== */
+.dashboard-overview {
+  background: #ffffff !important;
+}
+
+/* Recent Activity */
+.activity-header h3,
+.activity-title,
+.empty-text h4 {
+  color: #1f2937 !important;
+}
+
+.activity-header p,
+.activity-description,
+.activity-time,
+.empty-text p {
+  color: #6b7280 !important;
+}
+
+.activity-item {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.activity-footer {
+  border-top: 1px solid #e5e7eb !important;
+}
+
+.view-all-btn {
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.view-all-btn:hover {
+  background: #f3f4f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Quick Actions */
+.quick-actions-header h3,
+.action-title,
+.help-title {
+  color: #1f2937 !important;
+}
+
+.quick-actions-header p,
+.action-description,
+.help-description {
+  color: #6b7280 !important;
+}
+
+.action-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.action-card:hover {
+  border-color: var(--action-color) !important;
+}
+
+.action-arrow {
+  color: #6b7280 !important;
+}
+
+.quick-actions-footer {
+  border-top: 1px solid #e5e7eb !important;
+}
+
+.help-section {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+/* Jobs Overview */
+.jobs-table {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.table-header {
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.table-header .header-cell {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+.job-row {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.job-row:hover {
+  background: #f9fafb !important;
+}
+
+.job-title,
+.stat-number {
+  color: #1f2937 !important;
+}
+
+.job-meta,
+.stat-label,
+.salary-info,
+.date-info {
+  color: #6b7280 !important;
+}
+
+.job-type,
+.job-location {
+  background: #f3f4f6 !important;
+  color: #1f2937 !important;
+}
+
+.action-btn {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+}
+
+.action-btn:hover {
+  background: #e5e7eb !important;
+}
+
+/* ==================== ANALYTICS ==================== */
+.analytics-dashboard {
+  background: #ffffff !important;
+}
+
+.analytics-header,
+.chart-container,
+.table-container,
+.insights-container {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.metric-card {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.metric-value {
+  color: #1f2937 !important;
+}
+
+.metric-title,
+.trend-text {
+  color: #6b7280 !important;
+}
+
+.metric-footer {
+  border-color: #e5e7eb !important;
+}
+
+/* ==================== FORMS ==================== */
+.form-section {
+  border: 1px solid #e5e7eb !important;
+}
+
+.form-section h3 {
+  color: #1f2937 !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.form-group label {
+  color: #1f2937 !important;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.char-count {
+  color: #6b7280 !important;
+}
+
+/* ==================== MODALS ==================== */
+.application-detail-modal {
+  background: #ffffff !important;
+}
+
+.modal-header {
+  background: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.applicant-info h2 {
+  color: #1f2937 !important;
+}
+
+.applicant-info p {
+  color: #6b7280 !important;
+}
+
+.status-update label {
+  color: #1f2937 !important;
+}
+
+.status-update select {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.close-btn {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+}
+
+.close-btn:hover {
+  background: #e5e7eb !important;
+}
+
+.job-info-section {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.job-info-section h3 {
+  color: #1f2937 !important;
+}
+
+/* ==================== BULK ACTIONS ==================== */
+.bulk-actions-content {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.action-group h4 {
+  color: #1f2937 !important;
+}
+
+.action-btn {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.action-btn:hover {
+  background: #f3f4f6 !important;
+}
+
+.danger-zone {
+  border: 1px solid #fecaca !important;
+}
+
+.danger-zone h4 {
+  color: #dc2626 !important;
+}
+
+/* ==================== OVERRIDE ALL DARK MODE MEDIA QUERIES ==================== */
+@media (prefers-color-scheme: dark) {
+  /* Force override all dark mode styles */
+  * {
+    background-color: inherit !important;
+    color: inherit !important;
+  }
+
+  body,
+  html,
+  #root,
+  .App {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+  }
+}
+
+/* ==================== ENSURE TEXT READABILITY ==================== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #1f2937 !important;
+}
+
+p,
+span,
+div,
+label {
+  color: #1f2937 !important;
+}
+
+.text-secondary,
+.text-muted {
+  color: #6b7280 !important;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn,
+button {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.btn:hover,
+button:hover {
+  background: #f3f4f6 !important;
+}
+
+.btn-primary {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.btn-success {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.btn-danger {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+.btn-warning {
+  background: #f59e0b !important;
+  color: #ffffff !important;
+}
+
+/* ==================== AVATAR FIXES ==================== */
+.applicant-avatar {
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6) !important;
+  border: 2px solid #3b82f6 !important;
+  color: #1f2937 !important;
+  font-weight: 700 !important;
+}
+
+.applicant-avatar span {
+  color: #1f2937 !important;
+  font-weight: 700 !important;
+}
+
+/* ==================== ICON BUTTONS ==================== */
+.action-btn.icon-only {
+  padding: 8px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  border-radius: 8px !important;
+}
+
+/* ==================== HIRING FUNNEL IMPROVEMENTS ==================== */
+.step-info {
+  background: #ffffff !important;
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  padding: 16px 20px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.step-info:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+  border-color: #3b82f6 !important;
+}
+
+.conversion-rate {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+}
+
+.step-bar-container {
+  background: #e5e7eb !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.funnel-insights {
+  background: #ffffff !important;
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  padding: 24px !important;
+}

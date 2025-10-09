@@ -1,0 +1,311 @@
+.application-bulk-actions {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+    margin-bottom: 24px;
+    overflow: hidden;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.bulk-actions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    color: white;
+}
+
+.selection-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.selection-count {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.clear-selection-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-selection-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.toggle-actions-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-actions-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.arrow {
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+.arrow.up {
+    transform: rotate(180deg);
+}
+
+/* Content */
+.bulk-actions-content {
+    padding: 24px;
+    background: white;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.action-group {
+    margin-bottom: 24px;
+}
+
+.action-group:last-child {
+    margin-bottom: 0;
+}
+
+.action-group h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+}
+
+/* Status Buttons */
+.status-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.status-action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.status-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Other Actions */
+.other-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.action-btn {
+    padding: 10px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    color: #374151;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.export-btn:hover {
+    background: #10b981;
+    color: white;
+}
+
+.email-btn {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.email-btn:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+.archive-btn {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.archive-btn:hover {
+    background: #f59e0b;
+    color: white;
+}
+
+/* Danger Zone */
+.danger-zone {
+    border-top: 1px solid #fee2e2;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.danger-zone h4 {
+    color: #dc2626;
+}
+
+.danger-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.delete-btn {
+    border-color: #dc2626;
+    color: #dc2626;
+    background: #fef2f2;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .bulk-actions-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .selection-info {
+        justify-content: space-between;
+    }
+    
+    .bulk-actions-content {
+        padding: 20px;
+    }
+    
+    .status-buttons,
+    .other-actions,
+    .danger-actions {
+        flex-direction: column;
+    }
+    
+    .status-action-btn,
+    .action-btn {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .bulk-actions-header {
+        padding: 12px 16px;
+    }
+    
+    .bulk-actions-content {
+        padding: 16px;
+    }
+    
+    .action-group {
+        margin-bottom: 20px;
+    }
+    
+    .selection-info {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .bulk-actions-content {
+        background: #1e293b;
+        border-color: #334155;
+    }
+    
+    .action-group h4 {
+        color: #f1f5f9;
+    }
+    
+    .action-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #f1f5f9;
+    }
+    
+    .action-btn:hover {
+        background: #475569;
+    }
+    
+    .export-btn {
+        background: #064e3b;
+        border-color: #10b981;
+        color: #10b981;
+    }
+    
+    .email-btn {
+        background: #1e3a8a;
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+    
+    .archive-btn {
+        background: #92400e;
+        border-color: #f59e0b;
+        color: #f59e0b;
+    }
+    
+    .delete-btn {
+        background: #7f1d1d;
+        border-color: #dc2626;
+        color: #dc2626;
+    }
+    
+    .danger-zone {
+        border-color: #7f1d1d;
+    }
+    
+    .danger-zone h4 {
+        color: #f87171;
+    }
+}

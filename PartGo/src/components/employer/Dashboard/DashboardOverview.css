@@ -1,0 +1,287 @@
+/* Dashboard Overview */
+.dashboard-overview {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Welcome Section */
+.welcome-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 32px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  color: #1f2937;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-content h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.welcome-content p {
+  margin: 0;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.welcome-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-actions .btn-primary {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.welcome-actions .btn-primary:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  color: #6b7280;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-overview {
+    max-width: 100%;
+  }
+
+  .welcome-section {
+    padding: 24px;
+  }
+
+  .welcome-content h1 {
+    font-size: 24px;
+  }
+
+  .welcome-content p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-section {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .welcome-content h1 {
+    font-size: 22px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .dashboard-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-section {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .welcome-content h1 {
+    font-size: 20px;
+  }
+
+  .welcome-actions .btn-primary {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .dashboard-grid {
+    gap: 12px;
+  }
+
+  .dashboard-card {
+    padding: 16px;
+  }
+}
+
+/* Force Light Mode - Override Dark Mode */
+.dashboard-card {
+  background: white !important;
+  color: #1f2937 !important;
+}
+
+.loading-container p {
+  color: #6b7280 !important;
+}
+
+.loading-spinner {
+  border-color: #e5e7eb !important;
+  border-top-color: #3b82f6 !important;
+}
+
+/* Animation */
+@keyframes dashboardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-overview {
+  animation: dashboardEnter 0.6s ease-out;
+}
+
+.welcome-section {
+  animation: dashboardEnter 0.6s ease-out 0.1s both;
+}
+
+.dashboard-card:nth-child(1) {
+  animation: dashboardEnter 0.6s ease-out 0.2s both;
+}
+
+.dashboard-card:nth-child(2) {
+  animation: dashboardEnter 0.6s ease-out 0.3s both;
+}
+
+.dashboard-card:nth-child(3) {
+  animation: dashboardEnter 0.6s ease-out 0.4s both;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-overview,
+  .welcome-section,
+  .dashboard-card {
+    animation: none;
+  }
+
+  .dashboard-card:hover {
+    transform: none;
+  }
+
+  .welcome-actions .btn-primary:hover {
+    transform: none;
+  }
+
+  .loading-spinner {
+    animation: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .welcome-actions,
+  .dashboard-card {
+    box-shadow: none;
+  }
+
+  .welcome-section {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+
+  .welcome-content h1,
+  .welcome-content p {
+    color: #1f2937;
+  }
+}

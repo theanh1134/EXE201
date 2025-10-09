@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 
-const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
+const Login = ({ isOpen, onClose, onSwitchToSignUp, onShowForgotPassword }) => {
+    const { login, error, clearError } = useAuth();
+    const { success, error: showError } = useNotification();
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
         rememberMe: false
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [localError, setLocalError] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -13,25 +19,64 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+
+        // Clear errors when user starts typing
+        if (localError) setLocalError('');
+        if (error) clearError();
     };
 
-    const handleSubmit = () => {
-        console.log('Login data:', loginData);
-        alert('Login successful!');
-        onClose();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Validation
+        if (!loginData.email || !loginData.password) {
+            setLocalError('Vui lòng nhập đầy đủ thông tin');
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            setLocalError('');
+
+            await login({
+                email: loginData.email,
+                password: loginData.password
+            });
+
+            // Login successful - show success message and close modal
+            success('Đăng nhập thành công!', 'Chào mừng bạn quay trở lại');
+            onClose();
+        } catch (error) {
+            const errorMessage = error.message || 'Đăng nhập thất bại';
+            setLocalError(errorMessage);
+            showError(errorMessage, 'Lỗi đăng nhập');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div>
+        <>
             {/* Bootstrap CSS */}
             <link
                 href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
                 rel="stylesheet"
             />
 
-            <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+            <div className="modal show d-block" style={{
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                zIndex: 1060,
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
                 <div className="modal-dialog modal-xl" style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <div className="modal-content" style={{ borderRadius: '0', border: 'none', minHeight: '100vh' }}>
                         <div className="row g-0 h-100">
@@ -179,7 +224,7 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
                                         </div>
                                     </div>
 
-                                    <h2 className="fw-bold mb-4 text-center" style={{ color: '#333' }}>Welcome Back, Dude</h2>
+                                    <h2 className="fw-bold mb-4 text-center" style={{ color: '#333' }}>Chào mừng trở lại</h2>
 
                                     {/* Google Sign In */}
                                     <button className="btn w-100 mb-3 py-3 d-flex align-items-center justify-content-center" style={{
@@ -188,24 +233,31 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
                                         backgroundColor: 'white'
                                     }}>
                                         <span style={{ fontSize: '18px', marginRight: '12px' }}>🌐</span>
-                                        <span style={{ color: '#333', fontWeight: '500' }}>Login with Google</span>
+                                        <span style={{ color: '#333', fontWeight: '500' }}>Đăng nhập với Google</span>
                                     </button>
 
                                     <div className="text-center mb-3">
-                                        <span className="text-muted">Or login with email</span>
+                                        <span className="text-muted">Hoặc đăng nhập bằng email</span>
                                     </div>
 
-                                    <div>
+                                    <form onSubmit={handleSubmit}>
+                                        {/* Error Message */}
+                                        {(localError || error) && (
+                                            <div className="alert alert-danger mb-3" role="alert">
+                                                {localError || error}
+                                            </div>
+                                        )}
+
                                         {/* Email */}
                                         <div className="mb-3">
-                                            <label className="form-label fw-medium" style={{ color: '#333' }}>Email Address</label>
+                                            <label className="form-label fw-medium" style={{ color: '#333' }}>Địa chỉ Email</label>
                                             <input
                                                 type="email"
                                                 className="form-control"
                                                 name="email"
                                                 value={loginData.email}
                                                 onChange={handleInputChange}
-                                                placeholder="Your email address"
+                                                placeholder="Địa chỉ email của bạn"
                                                 style={{
                                                     borderRadius: '8px',
                                                     border: '1px solid #e9ecef',
@@ -213,19 +265,20 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
                                                     fontSize: '16px'
                                                 }}
                                                 required
+                                                disabled={isLoading}
                                             />
                                         </div>
 
                                         {/* Password */}
                                         <div className="mb-3">
-                                            <label className="form-label fw-medium" style={{ color: '#333' }}>Password</label>
+                                            <label className="form-label fw-medium" style={{ color: '#333' }}>Mật khẩu</label>
                                             <input
                                                 type="password"
                                                 className="form-control"
                                                 name="password"
                                                 value={loginData.password}
                                                 onChange={handleInputChange}
-                                                placeholder="Enter password"
+                                                placeholder="Nhập mật khẩu"
                                                 style={{
                                                     borderRadius: '8px',
                                                     border: '1px solid #e9ecef',
@@ -233,6 +286,7 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
                                                     fontSize: '16px'
                                                 }}
                                                 required
+                                                disabled={isLoading}
                                             />
                                         </div>
 
@@ -246,38 +300,57 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
                                                 onChange={handleInputChange}
                                                 id="rememberMe"
                                                 style={{ backgroundColor: loginData.rememberMe ? '#ff6b35' : 'white' }}
+                                                disabled={isLoading}
                                             />
                                             <label className="form-check-label text-muted" htmlFor="rememberMe">
-                                                Remember me
+                                                Ghi nhớ đăng nhập
                                             </label>
                                         </div>
 
                                         {/* Submit Button */}
                                         <button
-                                            type="button"
-                                            onClick={handleSubmit}
+                                            type="submit"
                                             className="btn w-100 py-3 fw-bold mb-4"
                                             style={{
-                                                backgroundColor: '#ff6b35',
+                                                backgroundColor: isLoading ? '#ccc' : '#ff6b35',
                                                 color: 'white',
                                                 borderRadius: '8px',
                                                 border: 'none',
                                                 fontSize: '16px'
                                             }}
+                                            disabled={isLoading}
                                         >
-                                            Login
+                                            {isLoading ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                    Đang đăng nhập...
+                                                </>
+                                            ) : (
+                                                'Đăng nhập'
+                                            )}
                                         </button>
-                                    </div>
+                                    </form>
 
                                     {/* Sign Up Link */}
                                     <p className="text-center mb-0">
-                                        <span className="text-muted">Don't have an account? </span>
+                                        <span className="text-muted">Chưa có tài khoản? </span>
                                         <button
                                             className="btn btn-link p-0 text-decoration-none fw-medium"
                                             style={{ color: '#ff6b35' }}
                                             onClick={onSwitchToSignUp}
                                         >
-                                            Sign up
+                                            Đăng ký
+                                        </button>
+                                    </p>
+
+                                    {/* Forgot Password Link */}
+                                    <p className="text-center mb-0 mt-2">
+                                        <button
+                                            className="btn btn-link p-0 text-decoration-none fw-medium"
+                                            style={{ color: '#6c757d', fontSize: '14px' }}
+                                            onClick={onShowForgotPassword}
+                                        >
+                                            Quên mật khẩu?
                                         </button>
                                     </p>
                                 </div>
@@ -286,7 +359,24 @@ const Login = ({ isOpen, onClose, onSwitchToSignUp }) => {
                     </div>
                 </div>
             </div>
-        </div>
+
+            <style>{`
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            
+            .modal.show {
+                animation: fadeIn 0.3s ease-out;
+            }
+        `}</style>
+        </>
     );
 };
 

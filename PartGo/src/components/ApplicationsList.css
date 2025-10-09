@@ -1,0 +1,690 @@
+.applications-list {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding: 20px;
+}
+
+.applications-header {
+  background: white !important;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.back-btn {
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  color: #475569;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.back-btn:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.header-info h1 {
+  margin: 0;
+  color: white !important;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.header-info p {
+  margin: 5px 0 0 0;
+  color: white !important;
+  font-size: 16px;
+}
+
+/* Statistics */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b !important;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #64748b !important;
+  font-weight: 500;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.filter-tab {
+  background: #f1f5f9;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #475569 !important;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-tab:hover {
+  background: #e2e8f0;
+  color: #1e293b !important;
+}
+
+.filter-tab.active {
+  background: #3b82f6;
+  color: white !important;
+}
+
+/* Applications Grid */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.application-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px;
+  transition: all 0.2s;
+}
+
+.application-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.applicant-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.applicant-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+  border: 2px solid #3b82f6;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.applicant-details h3 {
+  margin: 0;
+  color: white !important;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.applicant-details p {
+  margin: 2px 0;
+  color: #64748b !important;
+  font-size: 14px;
+}
+
+.applicant-details .phone {
+  color: #475569 !important;
+  font-size: 13px;
+}
+
+.application-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.applied-date {
+  font-size: 12px;
+  color: #64748b !important;
+}
+
+.status-badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.cover-letter-preview {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.cover-letter-preview strong {
+  color: #1e293b;
+  font-size: 12px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.cover-letter-preview p {
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.application-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.status-select {
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #475569;
+  min-width: 120px;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Empty State */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  margin: 0 0 10px 0;
+  color: #1e293b;
+  font-size: 20px;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #64748b;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Force Light Mode - All Text Black Bold */
+.applications-list {
+  background-color: white !important;
+}
+
+.applications-list * {
+  color: inherit;
+}
+
+.applications-list h1,
+.applications-list h2,
+.applications-list h3 {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.applications-list p {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list span:not(.status-badge) {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .stat-number {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .stat-label {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .filter-tab {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .applicant-details h3 {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .applicant-details p {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .applied-date {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .cover-letter-preview strong {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .cover-letter-preview p {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .empty-state h3 {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .empty-state p {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .loading-container {
+  color: #000000 !important;
+}
+
+/* Force Light Mode - Override Dark Theme */
+.applications-list {
+  background-color: white !important;
+}
+
+.applications-list .applications-header {
+  background: white !important;
+}
+
+.applications-list .header-info h1 {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .header-info p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .stat-card {
+  background: white !important;
+}
+
+.applications-list .stat-number {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .stat-label {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Application Cards - Force white background and blue text */
+.applications-list .application-card {
+  background: white !important;
+}
+
+.applications-list .applicant-details h3 {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .applicant-details p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .application-meta {
+  color: #1e40af !important;
+}
+
+.applications-list .applied-date {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .cover-letter-preview strong {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .cover-letter-preview p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Input fields and dropdowns - Force white background and black text */
+.applications-list input,
+.applications-list select,
+.applications-list textarea {
+  background: white !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.applications-list input::placeholder,
+.applications-list select::placeholder,
+.applications-list textarea::placeholder {
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+}
+
+.applications-list .status-select {
+  background: white !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.applications-list .filter-tab {
+  background: white !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.applications-list .filter-tab.active {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .applications-list {
+    padding: 15px;
+  }
+
+  .applications-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-tabs {
+    flex-wrap: wrap;
+  }
+
+  .application-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+
+  .status-select {
+    width: 100%;
+  }
+}
+
+/* ===== STRONG OVERRIDE - FORCE WHITE BACKGROUND AND BLUE TEXT ===== */
+.applications-list {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list * {
+  background: white !important;
+  background-color: white !important;
+}
+
+/* Header Section */
+.applications-list .applications-header {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list .header-info h1 {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .header-info p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Statistics Cards */
+.applications-list .stat-card {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list .stat-number {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .stat-label {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Application Cards */
+.applications-list .application-card {
+  background: white !important;
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.applications-list .applicant-details h3 {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .applicant-details p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .application-meta {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .applied-date {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .cover-letter-preview strong {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .cover-letter-preview p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Filter Section */
+.applications-list .filter-tabs {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list .filter-tab {
+  background: white !important;
+  background-color: white !important;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .filter-tab.active {
+  background: #1e40af !important;
+  color: white !important;
+}
+
+/* View Controls */
+.applications-list .view-controls {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list .view-mode {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list .view-btn {
+  background: white !important;
+  background-color: white !important;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list .view-btn.active {
+  background: #1e40af !important;
+  color: white !important;
+}
+
+/* Empty State */
+.applications-list .empty-state {
+  background: white !important;
+  background-color: white !important;
+}
+
+.applications-list .empty-state h3 {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+
+.applications-list .empty-state p {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Loading */
+.applications-list .loading-container {
+  background: white !important;
+  background-color: white !important;
+  color: #1e40af !important;
+}
+
+/* All Text Elements */
+.applications-list h1,
+.applications-list h2,
+.applications-list h3,
+.applications-list h4,
+.applications-list p,
+.applications-list span,
+.applications-list label,
+.applications-list div {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.applications-list h1,
+.applications-list h2,
+.applications-list h3,
+.applications-list h4 {
+  font-weight: 700 !important;
+}

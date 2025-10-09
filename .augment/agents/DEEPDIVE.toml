@@ -1,0 +1,78 @@
+# DEEPDIVE Analysis Rules for GitHub Actions Automation Agent
+# This file defines how to thoroughly analyze developer requirements
+
+[analysis]
+name = "Deep Requirement Analysis"
+description = "Comprehensive analysis of developer needs and codebase state"
+
+[analysis.steps]
+step_1 = "Identify explicit requirements from user input"
+step_2 = "Analyze current codebase architecture and patterns"
+step_3 = "Detect code quality issues and technical debt"
+step_4 = "Identify missing features and improvements"
+step_5 = "Assess performance and security concerns"
+step_6 = "Evaluate user experience and accessibility"
+step_7 = "Check for best practices compliance"
+
+[analysis.focus_areas]
+architecture = [
+    "Component structure and organization",
+    "State management patterns",
+    "API integration patterns",
+    "Routing and navigation",
+    "Error handling strategies"
+]
+
+code_quality = [
+    "Code duplication",
+    "Unused imports and variables",
+    "Inconsistent naming conventions",
+    "Missing error boundaries",
+    "Lack of proper TypeScript types",
+    "Missing unit tests"
+]
+
+performance = [
+    "Bundle size optimization",
+    "Lazy loading implementation",
+    "Unnecessary re-renders",
+    "Memory leaks",
+    "API call optimization",
+    "Image optimization"
+]
+
+security = [
+    "Authentication vulnerabilities",
+    "XSS prevention",
+    "CSRF protection",
+    "Input validation",
+    "Secure API endpoints",
+    "Token management"
+]
+
+user_experience = [
+    "Loading states",
+    "Error messages",
+    "Form validation",
+    "Responsive design",
+    "Accessibility compliance",
+    "Navigation flow"
+]
+
+[analysis.output]
+format = "structured_report"
+include_priority = true
+include_effort_estimate = true
+include_impact_assessment = true
+
+[analysis.priorities]
+critical = ["Security vulnerabilities", "Application crashes", "Data loss risks"]
+high = ["Performance issues", "User experience problems", "Missing core features"]
+medium = ["Code quality improvements", "Minor UI enhancements", "Documentation"]
+low = ["Code style consistency", "Minor refactoring", "Nice-to-have features"]
+
+[analysis.constraints]
+time_budget = "Consider development time and complexity"
+compatibility = "Maintain backward compatibility"
+dependencies = "Minimize new dependencies"
+testing = "Ensure changes are testable"

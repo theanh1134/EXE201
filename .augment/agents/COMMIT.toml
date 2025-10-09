@@ -1,0 +1,101 @@
+# COMMIT Rules for GitHub Actions Automation Agent
+# This file defines how to commit code changes to the repository
+
+[commit]
+name = "Code Commit Guidelines"
+description = "Rules for committing code changes with proper messages and structure"
+
+[commit.message_format]
+structure = "<type>(<scope>): <description>"
+max_length = 72
+description_case = "lowercase"
+include_body = true
+include_footer = true
+
+[commit.types]
+feat = "A new feature"
+fix = "A bug fix"
+docs = "Documentation only changes"
+style = "Changes that do not affect the meaning of the code"
+refactor = "A code change that neither fixes a bug nor adds a feature"
+perf = "A code change that improves performance"
+test = "Adding missing tests or correcting existing tests"
+chore = "Changes to the build process or auxiliary tools"
+ci = "Changes to CI configuration files and scripts"
+build = "Changes that affect the build system or external dependencies"
+
+[commit.scopes]
+frontend = ["components", "pages", "hooks", "contexts", "services", "styles", "utils"]
+backend = ["api", "models", "middleware", "routes", "services", "database", "auth"]
+config = ["build", "ci", "env", "package", "webpack", "babel"]
+docs = ["readme", "api", "guides", "changelog"]
+
+[commit.rules]
+atomic_commits = "Each commit should represent a single logical change"
+descriptive_messages = "Commit messages should clearly describe what was changed"
+present_tense = "Use present tense in commit messages (add, fix, update)"
+imperative_mood = "Use imperative mood (add feature, not added feature)"
+reference_issues = "Reference issue numbers when applicable"
+
+[commit.body_guidelines]
+explain_what_and_why = "Explain what was changed and why"
+wrap_at_72_chars = "Wrap body text at 72 characters"
+separate_paragraphs = "Use blank lines to separate paragraphs"
+bullet_points = "Use bullet points for multiple changes"
+
+[commit.footer_guidelines]
+breaking_changes = "Use BREAKING CHANGE: for breaking changes"
+issue_references = "Use Closes #123 or Fixes #123 for issue references"
+co_authors = "Use Co-authored-by: for multiple authors"
+
+[commit.examples]
+feature = """
+feat(auth): add password reset functionality
+
+- Implement forgot password API endpoint
+- Add password reset email template
+- Create reset password form component
+- Add validation for reset tokens
+
+Closes #45
+"""
+
+bugfix = """
+fix(jobs): resolve job application submission error
+
+Fix issue where job applications were failing due to
+missing validation on cover letter field. Added proper
+error handling and user feedback.
+
+Fixes #123
+"""
+
+refactor = """
+refactor(components): extract reusable form components
+
+- Create FormInput component for consistent styling
+- Extract FormButton component
+- Update existing forms to use new components
+- Improve form validation consistency
+"""
+
+[commit.pre_commit_checks]
+lint = "Run ESLint and fix auto-fixable issues"
+format = "Run Prettier to format code"
+test = "Run unit tests to ensure nothing is broken"
+build = "Verify that the application builds successfully"
+security = "Check for security vulnerabilities"
+
+[commit.branch_naming]
+feature = "feat/description-of-feature"
+bugfix = "fix/description-of-bug"
+hotfix = "hotfix/critical-issue-description"
+refactor = "refactor/description-of-refactor"
+docs = "docs/description-of-documentation"
+
+[commit.workflow]
+step_1 = "Stage only related files for the commit"
+step_2 = "Write descriptive commit message following format"
+step_3 = "Review changes one final time"
+step_4 = "Commit with proper message"
+step_5 = "Push to appropriate branch"
