@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware
 const corsOptions = {
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -17,7 +17,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // Extra CORS safety net for some environments
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    const origin = req.headers.origin;
+    if (['http://localhost:3000', 'http://localhost:3001'].includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.header('Access-Control-Allow-Credentials', 'true');

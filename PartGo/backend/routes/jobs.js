@@ -206,6 +206,15 @@ router.get('/:id', async (req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
     try {
         const jobData = req.body;
+        console.log('Creating job with data:', jobData);
+        console.log('User info:', req.user);
+
+        // Validate required fields
+        if (!jobData.title || !jobData.description || !jobData.category) {
+            return res.status(400).json({
+                message: 'Missing required fields: title, description, category'
+            });
+        }
 
         // Set company and creator
         jobData.company = req.user.companyId || req.user.userId; // Fallback to userId if no companyId
@@ -217,14 +226,24 @@ router.post('/', authenticateToken, async (req, res) => {
             jobData.status = 'draft';
         }
 
+        console.log('Final job data before save:', jobData);
+
         const job = new Job(jobData);
         await job.save();
 
-        await job.populate('company', 'name logo');
-        await job.populate('createdBy', 'fullName email');
+        console.log('Job saved successfully:', job._id);
+
+        // Try to populate company info
+        try {
+            await job.populate('company', 'name logo');
+            await job.populate('createdBy', 'fullName email');
+        } catch (populateError) {
+            console.log('Population error (non-critical):', populateError.message);
+        }
 
         res.status(201).json(job);
     } catch (error) {
+        console.error('Job creation error:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
@@ -239,7 +258,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         }
 
         // Check if user owns this job
-        if (job.company.toString() !== req.user.companyId) {
+        if (job.company.toString() !== req.user.companyId && job.company.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Not authorized' });
         }
 
@@ -301,7 +320,7 @@ router.post('/:id/clone', authenticateToken, async (req, res) => {
         }
 
         // Check if user owns this job
-        if (originalJob.company.toString() !== req.user.companyId) {
+        if (originalJob.company.toString() !== req.user.companyId && originalJob.company.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Not authorized' });
         }
 
@@ -341,7 +360,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         }
 
         // Check if user owns this job
-        if (job.company.toString() !== req.user.companyId) {
+        if (job.company.toString() !== req.user.companyId && job.company.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Not authorized' });
         }
 
@@ -362,7 +381,7 @@ router.get('/:id/stats', authenticateToken, async (req, res) => {
         }
 
         // Check if user owns this job
-        if (job.company.toString() !== req.user.companyId) {
+        if (job.company.toString() !== req.user.companyId && job.company.toString() !== req.user.userId) {
             return res.status(403).json({ message: 'Not authorized' });
         }
 

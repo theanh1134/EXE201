@@ -162,6 +162,11 @@ function AppContent() {
             <JobManagement />
           </ProtectedRoute>
         } />
+        <Route path="/company-dashboard/jobs/create" element={
+          <ProtectedRoute requiredRole="employer">
+            <JobManagement />
+          </ProtectedRoute>
+        } />
         <Route path="/company-dashboard/applications" element={
           <ProtectedRoute requiredRole="employer">
             <ApplicationManagement />

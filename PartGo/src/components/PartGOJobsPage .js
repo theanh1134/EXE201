@@ -3,6 +3,7 @@ import Header from './Header';
 import PartGOFooter from './PartGOFooter ';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchJobs } from '../services/jobsAPI';
+import './PartGOJobsPage.css';
 const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }) => {
     const { logout } = useAuth();
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -347,179 +348,357 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
         }
     });
 
-    return (
-        <>
-            <div>
-                {/* Bootstrap CSS */}
-                <link
-                    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-                    rel="stylesheet"
-                />
+    // Enhanced Job Card Component
+    const ModernJobCard = ({ job }) => {
+        const [isSaved, setIsSaved] = useState(false);
 
-                <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+        const getBadgeClass = (type) => {
+            switch (type?.toLowerCase()) {
+                case 'part-time': return 'badge-part-time';
+                case 'full-time': return 'badge-full-time';
+                case 'remote': return 'badge-remote';
+                default: return 'badge-part-time';
+            }
+        };
 
-                    {/* Header */}
-                    <Header
-                        onOpenCv={() => window.location.href = '/profile/cv'}
-                        onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
-                        onShowLogin={onShowLogin}
-                        onShowSignUp={onShowSignUp}
-                        onLogout={() => logout(() => window.location.href = '/')}
-                    />
+        const getCompanyLogo = (company) => {
+            // Generate consistent colors based on company name
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+            const colorIndex = company.charCodeAt(0) % colors.length;
+            return {
+                background: colors[colorIndex],
+                text: company.charAt(0).toUpperCase()
+            };
+        };
 
-                    {/* Hero Section */}
-                    <div style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }}>
-                        {/* Decorative elements */}
-                        <div style={{
-                            position: 'absolute',
-                            top: '20px',
-                            right: '10%',
-                            width: '100px',
-                            height: '100px',
-                            background: 'rgba(255,255,255,0.1)',
-                            borderRadius: '50%'
-                        }}></div>
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '30px',
-                            left: '5%',
-                            width: '60px',
-                            height: '60px',
-                            background: 'rgba(255,255,255,0.1)',
-                            borderRadius: '50%'
-                        }}></div>
+        const logo = getCompanyLogo(job.company);
 
-                        <div className="container py-5 text-center">
-                            <h1 className="display-5 fw-bold text-white mb-3">
-                                Tìm <span style={{ textDecoration: 'underline', textDecorationColor: '#ff6b35' }}>công việc mơ ước</span> của bạn
-                            </h1>
-                            <p className="text-white mb-4 opacity-75">
-                                Tìm kiếm cơ hội việc làm part time tại các công ty tại Hòa Lạc, Hà Nội
-                            </p>
+        return (
+            <div className="job-card-enhanced" onClick={() => onSelectJob(job.id)}>
+                {/* Company Logo */}
+                <div className="job-logo-section">
+                    <div className="company-logo" style={{ backgroundColor: logo.background }}>
+                        {logo.text}
+                    </div>
+                    <div className="job-status-indicator"></div>
+                </div>
 
-                            {/* Search Form */}
-                            <div
-                                className="bg-white p-3 rounded-3 mx-auto"
-                                style={{
-                                    maxWidth: '600px',
-                                    boxShadow: '0 10px 30px rgba(0,0,0,0.15)'
-                                }}
-                            >
-                                <div className="row g-0 align-items-center">
-                                    <div className="col-md-5">
-                                        <div className="d-flex align-items-center px-3 py-2" style={{ borderRight: '1px solid #f1f3f4' }}>
-                                            <div className="me-2" style={{ color: '#6c757d', fontSize: '18px' }}>
-                                                🔍
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control border-0 p-0"
-                                                placeholder="Chức danh hoặc từ khóa"
-                                                value={searchKeyword}
-                                                onChange={(e) => setSearchKeyword(e.target.value)}
-                                                style={{
-                                                    fontSize: '16px',
-                                                    backgroundColor: 'transparent',
-                                                    boxShadow: 'none'
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-5">
-                                        <div className="d-flex align-items-center px-3 py-2">
-                                            <div className="me-2" style={{ color: '#6c757d', fontSize: '18px' }}>
-                                                📍
-                                            </div>
-                                            <input
-                                                type="text"
-                                                className="form-control border-0 p-0"
-                                                value={location}
-                                                onChange={(e) => setLocation(e.target.value)}
-                                                style={{
-                                                    fontSize: '16px',
-                                                    backgroundColor: 'transparent',
-                                                    boxShadow: 'none'
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-md-2">
-                                        <button
-                                            className="btn w-100"
-                                            style={{
-                                                backgroundColor: '#ff6b35',
-                                                color: 'white',
-                                                fontWeight: '600',
-                                                borderRadius: '8px',
-                                                padding: '10px',
-                                                fontSize: '16px',
-                                                border: 'none'
-                                            }}
-                                        >
-                                            Tìm kiếm
-                                        </button>
-                                    </div>
-                                </div>
-                                {/* Giữ thanh tìm kiếm đơn giản như cũ */}
-                            </div>
+                {/* Job Header */}
+                <div className="job-header-enhanced">
+                    <div className="job-title-section">
+                        <h3 className="job-title-enhanced">{job.title}</h3>
+                        <div className="job-company-enhanced">{job.company}</div>
+                    </div>
+                    <div className="job-badges-enhanced">
+                        <span className={`job-badge-enhanced ${getBadgeClass(job.type)}`}>
+                            {job.type}
+                        </span>
+                        {job.isUrgent && (
+                            <span className="job-badge-enhanced badge-urgent-enhanced">🔥 Gấp</span>
+                        )}
+                    </div>
+                </div>
 
-                            <p className="text-white mt-3 opacity-75 small">
-                                Phổ biến: Nhân viên bán hàng, Nhân viên phục vụ, Gia sư, Nhân viên văn phòng
-                            </p>
+                {/* Job Details Grid */}
+                <div className="job-details-enhanced">
+                    <div className="detail-item-enhanced">
+                        <div className="detail-icon-enhanced">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div className="detail-content">
+                            <span className="detail-label">Địa điểm</span>
+                            <span className="detail-value">{job.location}</span>
                         </div>
                     </div>
 
-                    {/* Main Content */}
-                    <div className="container py-5">
+                    <div className="detail-item-enhanced">
+                        <div className="detail-icon-enhanced">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12,6 12,12 16,14"></polyline>
+                            </svg>
+                        </div>
+                        <div className="detail-content">
+                            <span className="detail-label">Thời gian</span>
+                            <span className="detail-value">{job.workSchedule}</span>
+                        </div>
+                    </div>
+
+                    <div className="detail-item-enhanced">
+                        <div className="detail-icon-enhanced">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div className="detail-content">
+                            <span className="detail-label">Lương</span>
+                            <span className="detail-value">{job.hourlyRate}</span>
+                        </div>
+                    </div>
+
+                    <div className="detail-item-enhanced">
+                        <div className="detail-icon-enhanced">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                        </div>
+                        <div className="detail-content">
+                            <span className="detail-label">Ứng viên</span>
+                            <span className="detail-value">{job.applied}/{job.capacity}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Job Tags */}
+                <div className="job-tags-enhanced">
+                    {job.tags.slice(0, 3).map((tag, index) => (
+                        <span key={index} className="job-tag-enhanced">{tag}</span>
+                    ))}
+                    {job.tags.length > 3 && (
+                        <span className="job-tag-enhanced more-tags">+{job.tags.length - 3}</span>
+                    )}
+                </div>
+
+                {/* Job Footer */}
+                <div className="job-footer-enhanced">
+                    <div className="job-meta-enhanced">
+                        <span className="posted-date">📅 {job.postedDate}</span>
+                        <span className="distance-info">📍 {job._distanceDisplay || 'N/A'} km</span>
+                    </div>
+                    <div className="job-actions-enhanced">
+                        <button
+                            className="btn-apply-enhanced"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onSelectJob(job.id);
+                            }}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="8.5" cy="7" r="4"></circle>
+                                <line x1="20" y1="8" x2="20" y2="14"></line>
+                                <line x1="23" y1="11" x2="17" y2="11"></line>
+                            </svg>
+                            Ứng tuyển
+                        </button>
+                        <button
+                            className={`btn-save-enhanced ${isSaved ? 'saved' : ''}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsSaved(!isSaved);
+                                saveJob(job);
+                            }}
+                            title="Lưu việc làm"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                        <button
+                            className="btn-map-enhanced"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openMapForJob(job);
+                            }}
+                            title="Xem bản đồ"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <div>
+            {/* Bootstrap CSS */}
+            <link
+                href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+                rel="stylesheet"
+            />
+
+            <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+
+                {/* Header */}
+                <Header
+                    onOpenCv={() => window.location.href = '/profile/cv'}
+                    onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
+                    onShowLogin={onShowLogin}
+                    onShowSignUp={onShowSignUp}
+                    onLogout={() => logout(() => window.location.href = '/')}
+                />
+
+                {/* Hero Section */}
+                <div className="jobs-hero">
+                    {/* Background Image Overlay */}
+                    <div className="hero-background">
+                        <div className="hero-overlay"></div>
+                        <div className="hero-pattern"></div>
+                    </div>
+
+                    {/* Floating Elements */}
+                    <div className="floating-elements">
+                        <div className="floating-icon">💼</div>
+                        <div className="floating-icon">🎯</div>
+                        <div className="floating-icon">⭐</div>
+                        <div className="floating-icon">🚀</div>
+                    </div>
+
+                    <div className="container text-center">
+                        <div className="hero-content">
+                            <div className="hero-badge">
+                                <span className="badge-icon">✨</span>
+                                <span>Hơn 1000+ công việc part-time</span>
+                            </div>
+
+                            <h1 className="hero-title">
+                                Tìm <span className="gradient-text">công việc mơ ước</span> của bạn
+                            </h1>
+
+                            <p className="hero-subtitle">
+                                Khám phá hàng nghìn cơ hội việc làm part-time tại các công ty hàng đầu Hòa Lạc, Hà Nội
+                            </p>
+
+                            {/* Enhanced Search Form */}
+                            <div className="search-container-modern">
+                                <div className="search-card">
+                                    <div className="search-row">
+                                        <div className="search-field">
+                                            <div className="search-icon-modern">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <circle cx="11" cy="11" r="8"></circle>
+                                                    <path d="m21 21-4.35-4.35"></path>
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="search-input-modern"
+                                                placeholder="Chức danh hoặc từ khóa"
+                                                value={searchKeyword}
+                                                onChange={(e) => setSearchKeyword(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="search-field">
+                                            <div className="search-icon-modern">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                    <circle cx="12" cy="10" r="3"></circle>
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                className="search-input-modern"
+                                                placeholder="Địa điểm"
+                                                value={location}
+                                                onChange={(e) => setLocation(e.target.value)}
+                                            />
+                                        </div>
+
+                                        <button className="search-btn-modern">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <path d="m21 21-4.35-4.35"></path>
+                                            </svg>
+                                            <span>Tìm kiếm</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="popular-searches-modern">
+                                <span className="popular-label">Tìm kiếm phổ biến:</span>
+                                <div className="popular-tags">
+                                    <span className="popular-tag-modern">Nhân viên bán hàng</span>
+                                    <span className="popular-tag-modern">Phục vụ</span>
+                                    <span className="popular-tag-modern">Gia sư</span>
+                                    <span className="popular-tag-modern">Văn phòng</span>
+                                    <span className="popular-tag-modern">Marketing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="jobs-main">
+                    <div className="container">
                         <div className="row">
 
                             {/* Sidebar Filters */}
                             <div className="col-lg-3">
-                                <div className="bg-white p-4 rounded shadow-sm mb-4">
+                                <div className="filters-sidebar">
 
                                     {/* Khoảng cách */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-2">
-                                            <h6 className="fw-bold mb-0">Khoảng cách (km)</h6>
-                                            <span className="text-muted small">≤ {distanceKm}</span>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Khoảng cách</h6>
+                                            <button className="filter-toggle">⌄</button>
                                         </div>
-                                        <input type="range" className="form-range" min="1" max="20" value={distanceKm} onChange={(e) => setDistanceKm(parseInt(e.target.value))} />
+                                        <div className="range-container">
+                                            <div className="range-display">
+                                                <span>1 km</span>
+                                                <span className="range-value">≤ {distanceKm} km</span>
+                                                <span>20 km</span>
+                                            </div>
+                                            <input
+                                                type="range"
+                                                className="custom-range"
+                                                min="1"
+                                                max="20"
+                                                value={distanceKm}
+                                                onChange={(e) => setDistanceKm(parseInt(e.target.value))}
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* Kỹ năng yêu cầu */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-2">
-                                            <h6 className="fw-bold mb-0">Kỹ năng yêu cầu</h6>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Kỹ năng yêu cầu</h6>
                                         </div>
-                                        <input className="form-control" placeholder="Bán hàng, giao tiếp..." value={skillsQuery} onChange={(e) => setSkillsQuery(e.target.value)} />
+                                        <input
+                                            className="filter-input"
+                                            placeholder="Bán hàng, giao tiếp, Excel..."
+                                            value={skillsQuery}
+                                            onChange={(e) => setSkillsQuery(e.target.value)}
+                                        />
                                     </div>
 
                                     {/* Type of Employment */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 className="fw-bold mb-0">Loại hình việc làm</h6>
-                                            <span>⌄</span>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Loại hình việc làm</h6>
+                                            <button className="filter-toggle">⌄</button>
                                         </div>
                                         {filterOptions.employmentType.map((option, index) => (
-                                            <div key={index} className="form-check mb-2">
-                                                <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    id={`employment-${index}`}
-                                                    checked={typeSelected.includes(option.name)}
-                                                    onChange={(e) => {
-                                                        const checked = e.target.checked;
-                                                        setTypeSelected(prev => checked ? [...new Set([...prev, option.name])] : prev.filter(v => v !== option.name));
-                                                    }}
-                                                />
-                                                <label className="form-check-label d-flex justify-content-between w-100" htmlFor={`employment-${index}`}>
-                                                    <span>{option.name}</span>
-                                                    <span className="text-muted">({option.count})</span>
-                                                </label>
+                                            <div key={index} className="filter-option">
+                                                <div className="custom-checkbox">
+                                                    <input
+                                                        type="checkbox"
+                                                        id={`employment-${index}`}
+                                                        checked={typeSelected.includes(option.name)}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            setTypeSelected(prev => checked ? [...new Set([...prev, option.name])] : prev.filter(v => v !== option.name));
+                                                        }}
+                                                    />
+                                                    <label className="option-label" htmlFor={`employment-${index}`}>
+                                                        {option.name}
+                                                    </label>
+                                                </div>
+                                                <span className="option-count">{option.count}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -632,277 +811,94 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
                             {/* Main Content */}
                             <div className="col-lg-9">
 
-                                {/* Header */}
-                                <div className="d-flex justify-content-between align-items-center mb-4">
-                                    <div>
-                                        <h2 className="fw-bold mb-1">Tất cả việc làm</h2>
-                                        <p className="text-muted mb-0">Hiển thị {totalJobs} kết quả</p>
+                                {/* Results Header */}
+                                <div className="results-header">
+                                    <div className="results-info">
+                                        <h2>Tất cả việc làm</h2>
+                                        <p className="results-count">Hiển thị {filteredJobs.length} kết quả</p>
                                     </div>
-                                    <div className="d-flex align-items-center">
-                                        <span className="me-2 text-muted">Sắp xếp theo:</span>
+                                    <div className="sort-controls">
+                                        <span className="sort-label">Sắp xếp theo:</span>
                                         <select
-                                            className="form-select border-0 bg-transparent"
+                                            className="sort-select"
                                             value={sortBy}
                                             onChange={(e) => setSortBy(e.target.value)}
-                                            style={{ width: 'auto' }}
                                         >
                                             <option>Phù hợp nhất</option>
                                             <option>Mới nhất</option>
                                             <option>Cũ nhất</option>
+                                            <option>Lương cao nhất</option>
                                         </select>
-                                        <div className="ms-3">
-                                            <button className="btn btn-sm btn-outline-secondary me-2">☰</button>
-                                            <button className="btn btn-sm" style={{ backgroundColor: '#ff6b35', color: 'white' }}>⊞</button>
+                                        <div className="view-toggle">
+                                            <button className="view-btn">☰</button>
+                                            <button className="view-btn active">⊞</button>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Job Cards */}
-                                <div className="row">
+                                <div className="jobs-grid">
                                     {loadingJobs && (
-                                        <div className="col-12 text-center text-muted mb-3">Đang tải việc làm...</div>
+                                        <div className="loading-state">
+                                            <div className="loading-spinner">
+                                                <div className="spinner"></div>
+                                            </div>
+                                            <p>Đang tải việc làm...</p>
+                                        </div>
                                     )}
                                     {!loadingJobs && jobsError && (
-                                        <div className="col-12"><div className="alert alert-danger">{jobsError}</div></div>
+                                        <div className="error-state">
+                                            <div className="error-icon">⚠️</div>
+                                            <h3>Không thể tải danh sách việc làm</h3>
+                                            <p>{jobsError}</p>
+                                        </div>
                                     )}
                                     {!loadingJobs && !jobsError && filteredJobs.length === 0 && (
-                                        <div className="col-12 text-center text-muted mb-3">Chưa có việc làm phù hợp</div>
+                                        <div className="empty-state">
+                                            <div className="empty-icon">🔍</div>
+                                            <h3>Không tìm thấy việc làm phù hợp</h3>
+                                            <p>Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
+                                            <button className="btn-reset-filters">
+                                                🔄 Đặt lại bộ lọc
+                                            </button>
+                                        </div>
                                     )}
                                     {!loadingJobs && !jobsError && filteredJobs.map((job) => (
-                                        <div key={job.id} className="col-md-6 mb-4">
-                                            <div
-                                                className="bg-white rounded-3 h-100 position-relative"
-                                                style={{
-                                                    border: '1px solid #f1f3f4',
-                                                    transition: 'all 0.3s ease',
-                                                    cursor: 'pointer'
-                                                }}
-                                                onClick={() => onSelectJob(job.id)}
-                                                onMouseEnter={(e) => {
-                                                    e.currentTarget.style.transform = 'translateY(-2px)';
-                                                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
-                                                    e.currentTarget.style.borderColor = '#e0e0e0';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.currentTarget.style.transform = 'translateY(0)';
-                                                    e.currentTarget.style.boxShadow = 'none';
-                                                    e.currentTarget.style.borderColor = '#f1f3f4';
-                                                }}
-                                            >
-                                                <div className="p-4">
-                                                    {/* Header Section */}
-                                                    <div className="d-flex align-items-start mb-4">
-                                                        <div
-                                                            className="me-3 d-flex align-items-center justify-content-center rounded-3"
-                                                            style={{
-                                                                width: '56px',
-                                                                height: '56px',
-                                                                backgroundColor: job.color,
-                                                                fontSize: '1.5rem',
-                                                                flexShrink: 0
-                                                            }}
-                                                        >
-                                                            <span style={{ filter: 'grayscale(100%) brightness(0) invert(1)' }}>
-                                                                {job.logo}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex-grow-1 min-width-0">
-                                                            <h5 className="fw-bold mb-2 text-truncate" style={{ color: '#1a1a1a', fontSize: '18px' }}>
-                                                                {job.title}
-                                                            </h5>
-                                                            <p className="text-muted mb-0" style={{ fontSize: '14px', lineHeight: '1.4' }}>
-                                                                <span className="fw-medium">{job.company}</span>
-                                                                <span className="mx-2">•</span>
-                                                                <span>{job.location}</span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Tags Section */}
-                                                    <div className="d-flex flex-wrap gap-2 mb-3">
-                                                        <span
-                                                            className="badge px-3 py-2"
-                                                            style={{
-                                                                backgroundColor: '#f0f9f0',
-                                                                color: '#1b5e20',
-                                                                fontSize: '12px',
-                                                                fontWeight: '500',
-                                                                borderRadius: '20px',
-                                                                border: '1px solid #e8f5e8'
-                                                            }}
-                                                        >
-                                                            {job.type}
-                                                        </span>
-                                                        {job.tags.map((tag, index) => (
-                                                            <span
-                                                                key={index}
-                                                                className="badge px-3 py-2"
-                                                                style={{
-                                                                    backgroundColor: '#fff8e1',
-                                                                    color: '#f57600',
-                                                                    fontSize: '12px',
-                                                                    fontWeight: '500',
-                                                                    borderRadius: '20px',
-                                                                    border: '1px solid #ffecb3'
-                                                                }}
-                                                            >
-                                                                {tag}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-
-                                                    {/* Job Details */}
-                                                    <div className="mb-3">
-                                                        <div className="d-flex align-items-center mb-2">
-                                                            <span className="me-2" style={{ color: '#ff6b35', fontSize: '14px' }}>💰</span>
-                                                            <span className="fw-medium" style={{ color: '#2c3e50', fontSize: '14px' }}>
-                                                                {job.hourlyRate}
-                                                            </span>
-                                                        </div>
-                                                        <div className="d-flex align-items-center mb-2">
-                                                            <span className="me-2" style={{ color: '#ff6b35', fontSize: '14px' }}>⏰</span>
-                                                            <span className="text-muted" style={{ fontSize: '14px' }}>
-                                                                {job.workSchedule}
-                                                            </span>
-                                                        </div>
-                                                        <div className="d-flex align-items-center mb-2">
-                                                            <span className="me-2" style={{ color: '#ff6b35', fontSize: '14px' }}>📍</span>
-                                                            <span className="text-muted" style={{ fontSize: '14px' }}>
-                                                                Cách bạn ~ {job._distanceDisplay || job.distanceKm} km
-                                                            </span>
-                                                        </div>
-                                                        <div className="d-flex align-items-center">
-                                                            <span className="me-2" style={{ color: '#ff6b35', fontSize: '14px' }}>📅</span>
-                                                            <span className="text-muted" style={{ fontSize: '14px' }}>
-                                                                Đăng {job.postedDate}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Footer Section */}
-                                                    <div className="d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <div
-                                                                className="progress mb-2"
-                                                                style={{
-                                                                    height: '6px',
-                                                                    backgroundColor: '#f5f5f5',
-                                                                    width: '120px',
-                                                                    borderRadius: '3px'
-                                                                }}
-                                                            >
-                                                                <div
-                                                                    className="progress-bar"
-                                                                    style={{
-                                                                        width: `${(job.applied / job.capacity) * 100}%`,
-                                                                        backgroundColor: job.applied === 0 ? '#e0e0e0' : '#ff6b35',
-                                                                        borderRadius: '3px'
-                                                                    }}
-                                                                ></div>
-                                                            </div>
-                                                            <small style={{ color: '#666', fontSize: '12px' }}>
-                                                                <span className="fw-medium">{job.applied}</span> đã ứng tuyển / <span className="fw-medium">{job.capacity}</span> vị trí
-                                                            </small>
-                                                        </div>
-
-                                                        <button
-                                                            className="btn px-4 py-2"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                onSelectJob(job.id);
-                                                            }}
-                                                            style={{
-                                                                backgroundColor: '#ff6b35',
-                                                                color: 'white',
-                                                                fontWeight: '600',
-                                                                fontSize: '14px',
-                                                                borderRadius: '8px',
-                                                                border: 'none',
-                                                                transition: 'all 0.3s ease',
-                                                                boxShadow: '0 2px 8px rgba(255, 107, 53, 0.3)'
-                                                            }}
-                                                            onMouseEnter={(e) => {
-                                                                e.target.style.backgroundColor = '#e55a2b';
-                                                                e.target.style.transform = 'translateY(-1px)';
-                                                                e.target.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.4)';
-                                                            }}
-                                                            onMouseLeave={(e) => {
-                                                                e.target.style.backgroundColor = '#ff6b35';
-                                                                e.target.style.transform = 'translateY(0)';
-                                                                e.target.style.boxShadow = '0 2px 8px rgba(255, 107, 53, 0.3)';
-                                                            }}
-                                                            title="Ứng tuyển"
-                                                            aria-label="Ứng tuyển"
-                                                        >
-                                                            <span style={{ fontSize: '18px' }}>📩</span>
-                                                        </button>
-                                                        <button
-                                                            className="btn btn-outline-warning ms-2"
-                                                            onClick={(e) => { e.stopPropagation(); saveJob(job); }}
-                                                            title="Lưu việc làm"
-                                                            aria-label="Lưu việc làm"
-                                                        >
-                                                            <span style={{ fontSize: '18px' }}>🔖</span>
-                                                        </button>
-                                                        <button
-                                                            className="btn btn-outline-secondary ms-2"
-                                                            onClick={(e) => { e.stopPropagation(); openMapForJob(job); }}
-                                                            title="Xem bản đồ"
-                                                            aria-label="Xem bản đồ"
-                                                        >
-                                                            <span style={{ fontSize: '18px' }}>🗺️</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-
-                                                {/* Subtle top border accent */}
-                                                <div
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        left: 0,
-                                                        right: 0,
-                                                        height: '3px',
-                                                        background: `linear-gradient(90deg, ${job.color}, ${job.color}90)`,
-                                                        borderRadius: '12px 12px 0 0'
-                                                    }}
-                                                ></div>
-                                            </div>
-                                        </div>
+                                        <ModernJobCard key={job.id} job={job} />
                                     ))}
                                 </div>
 
-                                {/* Pagination */}
-                                <div className="d-flex justify-content-center mt-4">
+
+                                {/* Modern Pagination */}
+                                <div className="pagination-modern">
                                     <nav>
-                                        <ul className="pagination">
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>‹</a>
+                                        <ul className="pagination-list">
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Previous">‹</a>
                                             </li>
-                                            <li className="page-item active">
-                                                <a className="page-link" href="#" style={{ backgroundColor: '#ff6b35', borderColor: '#ff6b35' }}>1</a>
+                                            <li className="pagination-item active">
+                                                <a className="pagination-link" href="#" aria-label="Page 1">1</a>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>2</a>
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Page 2">2</a>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>3</a>
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Page 3">3</a>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>4</a>
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Page 4">4</a>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>5</a>
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Page 5">5</a>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>...</a>
+                                            <li className="pagination-item">
+                                                <span className="pagination-ellipsis">...</span>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>33</a>
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Page 33">33</a>
                                             </li>
-                                            <li className="page-item">
-                                                <a className="page-link" href="#" style={{ color: '#6c757d' }}>›</a>
+                                            <li className="pagination-item">
+                                                <a className="pagination-link" href="#" aria-label="Next">›</a>
                                             </li>
                                         </ul>
                                     </nav>
@@ -914,7 +910,7 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
 
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

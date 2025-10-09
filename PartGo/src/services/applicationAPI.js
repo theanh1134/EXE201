@@ -76,3 +76,4 @@ export const applicationStatuses = [
 
 export default applicationAPI;
 
+

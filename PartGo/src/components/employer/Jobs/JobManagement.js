@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEmployerData } from '../../../hooks/employer/useEmployerData';
 import { useNotification } from '../../../contexts/NotificationContext';
 import { jobOptions } from '../../../services/jobAPI';
@@ -10,9 +11,11 @@ import CreateJobModal from '../../CreateJobModal';
 import './JobManagement.css';
 
 const JobManagement = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const { jobs, loading, loadJobs, deleteJob, publishJob, cloneJob } = useEmployerData();
     const { success, error: showError } = useNotification();
-    
+
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [selectedJobs, setSelectedJobs] = useState([]);
     const [filters, setFilters] = useState({
@@ -26,6 +29,15 @@ const JobManagement = () => {
     const [editingJob, setEditingJob] = useState(null);
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
+    // Check URL for create action
+    useEffect(() => {
+        if (location.pathname.includes('/create')) {
+            setShowCreateModal(true);
+            // Clean up URL without the /create part
+            navigate('/company-dashboard/jobs', { replace: true });
+        }
+    }, [location.pathname, navigate]);
+
     // Filter and sort jobs
     useEffect(() => {
         let filtered = [...jobs];
@@ -34,18 +46,18 @@ const JobManagement = () => {
         if (filters.status !== 'all') {
             filtered = filtered.filter(job => job.status === filters.status);
         }
-        
+
         if (filters.category !== 'all') {
             filtered = filtered.filter(job => job.category === filters.category);
         }
-        
+
         if (filters.type !== 'all') {
             filtered = filtered.filter(job => job.type === filters.type);
         }
-        
+
         if (filters.search) {
             const searchLower = filters.search.toLowerCase();
-            filtered = filtered.filter(job => 
+            filtered = filtered.filter(job =>
                 job.title.toLowerCase().includes(searchLower) ||
                 job.description.toLowerCase().includes(searchLower) ||
                 job.location?.city?.toLowerCase().includes(searchLower)
@@ -201,7 +213,7 @@ const JobManagement = () => {
                         <p>Tạo, chỉnh sửa và quản lý các tin tuyển dụng của bạn</p>
                     </div>
                     <div className="header-actions">
-                        <button 
+                        <button
                             className="btn-create-job"
                             onClick={handleCreateJob}
                         >
@@ -211,7 +223,7 @@ const JobManagement = () => {
                 </div>
 
                 {/* Filters */}
-                <JobFilters 
+                <JobFilters
                     filters={filters}
                     onFilterChange={handleFilterChange}
                     jobCount={filteredJobs.length}
@@ -220,7 +232,7 @@ const JobManagement = () => {
 
                 {/* Bulk Actions */}
                 {selectedJobs.length > 0 && (
-                    <JobBulkActions 
+                    <JobBulkActions
                         selectedCount={selectedJobs.length}
                         onBulkAction={handleBulkAction}
                         onClearSelection={() => setSelectedJobs([])}
@@ -230,20 +242,20 @@ const JobManagement = () => {
                 {/* View Controls */}
                 <div className="view-controls">
                     <div className="view-mode">
-                        <button 
+                        <button
                             className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
                             onClick={() => setViewMode('grid')}
                         >
                             ⊞ Grid
                         </button>
-                        <button 
+                        <button
                             className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
                             onClick={() => setViewMode('list')}
                         >
                             ☰ List
                         </button>
                     </div>
-                    
+
                     <div className="select-all">
                         <label>
                             <input
@@ -263,13 +275,13 @@ const JobManagement = () => {
                             <div className="empty-icon">📝</div>
                             <h3>Không tìm thấy công việc nào</h3>
                             <p>
-                                {jobs.length === 0 
+                                {jobs.length === 0
                                     ? 'Bạn chưa có tin tuyển dụng nào. Tạo tin đầu tiên để bắt đầu!'
                                     : 'Thử thay đổi bộ lọc để xem thêm kết quả'
                                 }
                             </p>
                             {jobs.length === 0 && (
-                                <button 
+                                <button
                                     className="btn-primary"
                                     onClick={handleCreateJob}
                                 >
