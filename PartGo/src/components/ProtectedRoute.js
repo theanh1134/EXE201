@@ -1,30 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNotification } from '../contexts/NotificationContext';
 import './ProtectedRoute.css';
 
 const ProtectedRoute = ({
     children,
     requiredRole = null,
     fallbackComponent = null,
-    redirectTo = '/',
-    showNotification = true
+    redirectTo = '/jobs'
 }) => {
     const { user, isAuthenticated } = useAuth();
-    const { warning } = useNotification();
 
-    // Use useEffect to avoid setState during render
-    useEffect(() => {
-        if (!isAuthenticated || !user) {
-            if (showNotification) {
-                warning('Vui lòng đăng nhập để truy cập tính năng này', 'Cần đăng nhập');
-            }
-        } else if (requiredRole && user.role !== requiredRole) {
-            if (showNotification) {
-                warning(`Chỉ tài khoản ${requiredRole === 'employer' ? 'công ty' : 'ứng viên'} mới có thể truy cập tính năng này`, 'Không có quyền truy cập');
-            }
-        }
-    }, [isAuthenticated, user, requiredRole, showNotification, warning]);
+    // No need to show warning notifications - just redirect silently
 
     // Kiểm tra đăng nhập
     if (!isAuthenticated || !user) {

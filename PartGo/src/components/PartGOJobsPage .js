@@ -3,6 +3,7 @@ import Header from './Header';
 import PartGOFooter from './PartGOFooter ';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchJobs } from '../services/jobsAPI';
+import { getCategoryIcon, getJobTypeIcon, getPriorityColor, getPriorityBadge } from '../utils/jobCategoryIcons';
 import './PartGOJobsPage.css';
 const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }) => {
     const { logout } = useAuth();
@@ -386,16 +387,29 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
                 {/* Job Header */}
                 <div className="job-header-enhanced">
                     <div className="job-title-section">
-                        <h3 className="job-title-enhanced">{job.title}</h3>
-                        <div className="job-company-enhanced">{job.company}</div>
+                        <div className="job-title-with-icon">
+                            <span className="job-category-icon" style={{ fontSize: '20px' }}>
+                                {getCategoryIcon(job.category).emoji}
+                            </span>
+                            <div>
+                                <h3 className="job-title-enhanced">{job.title}</h3>
+                                <div className="job-company-enhanced">{job.company}</div>
+                            </div>
+                        </div>
                     </div>
                     <div className="job-badges-enhanced">
                         <span className={`job-badge-enhanced ${getBadgeClass(job.type)}`}>
-                            {job.type}
+                            {getJobTypeIcon(job.type)} {job.type}
                         </span>
-                        {job.isUrgent && (
-                            <span className="job-badge-enhanced badge-urgent-enhanced">🔥 Gấp</span>
-                        )}
+                        {job.priority === 'urgent' || job.priority === 'hot' ? (
+                            <span className="job-badge-enhanced badge-urgent-enhanced" style={{ backgroundColor: getPriorityColor(job.priority) }}>
+                                {getPriorityBadge(job.priority)}
+                            </span>
+                        ) : job.priority === 'premium' ? (
+                            <span className="job-badge-enhanced badge-premium-enhanced" style={{ backgroundColor: getPriorityColor(job.priority) }}>
+                                {getPriorityBadge(job.priority)}
+                            </span>
+                        ) : null}
                     </div>
                 </div>
 
@@ -536,11 +550,11 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
                     onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
                     onShowLogin={onShowLogin}
                     onShowSignUp={onShowSignUp}
-                    onLogout={() => logout(() => window.location.href = '/')}
+                    onLogout={() => logout(() => window.location.href = '/jobs')}
                 />
 
                 {/* Hero Section */}
-                <div className="jobs-hero">
+                <div className="jobs-hero" style={{ paddingTop: '80px' }}>
                     {/* Background Image Overlay */}
                     <div className="hero-background">
                         <div className="hero-overlay"></div>
@@ -704,91 +718,87 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
                                     </div>
 
                                     {/* Categories */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 className="fw-bold mb-0">Danh mục</h6>
-                                            <span>⌄</span>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Danh mục</h6>
+                                            <button className="filter-toggle">⌄</button>
                                         </div>
                                         {filterOptions.categories.map((option, index) => (
-                                            <div key={index} className="form-check mb-2">
+                                            <div key={index} className="form-check">
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
                                                     id={`category-${index}`}
                                                     defaultChecked={option.selected}
-                                                    style={option.selected ? { accentColor: '#ff6b35' } : {}}
                                                 />
-                                                <label className="form-check-label d-flex justify-content-between w-100" htmlFor={`category-${index}`}>
+                                                <label className="form-check-label" htmlFor={`category-${index}`}>
                                                     <span>{option.name}</span>
-                                                    <span className="text-muted">({option.count})</span>
+                                                    <span className="option-count">({option.count})</span>
                                                 </label>
                                             </div>
                                         ))}
                                     </div>
 
                                     {/* Job Level */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 className="fw-bold mb-0">Cấp độ công việc</h6>
-                                            <span>⌄</span>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Cấp độ công việc</h6>
+                                            <button className="filter-toggle">⌄</button>
                                         </div>
                                         {filterOptions.jobLevel.map((option, index) => (
-                                            <div key={index} className="form-check mb-2">
+                                            <div key={index} className="form-check">
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
                                                     id={`level-${index}`}
                                                     defaultChecked={option.selected}
-                                                    style={option.selected ? { accentColor: '#ff6b35' } : {}}
                                                 />
-                                                <label className="form-check-label d-flex justify-content-between w-100" htmlFor={`level-${index}`}>
+                                                <label className="form-check-label" htmlFor={`level-${index}`}>
                                                     <span>{option.name}</span>
-                                                    <span className="text-muted">({option.count})</span>
+                                                    <span className="option-count">({option.count})</span>
                                                 </label>
                                             </div>
                                         ))}
                                     </div>
 
                                     {/* Work Schedule */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 className="fw-bold mb-0">Lịch làm việc</h6>
-                                            <span>⌄</span>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Lịch làm việc</h6>
+                                            <button className="filter-toggle">⌄</button>
                                         </div>
                                         {filterOptions.workSchedule.map((option, index) => (
-                                            <div key={index} className="form-check mb-2">
+                                            <div key={index} className="form-check">
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
                                                     id={`schedule-${index}`}
-                                                    style={{ accentColor: '#ff6b35' }}
                                                     checked={scheduleSelected.includes(option.name)}
                                                     onChange={(e) => {
                                                         const checked = e.target.checked;
                                                         setScheduleSelected(prev => checked ? [...new Set([...prev, option.name])] : prev.filter(v => v !== option.name));
                                                     }}
                                                 />
-                                                <label className="form-check-label d-flex justify-content-between w-100" htmlFor={`schedule-${index}`}>
+                                                <label className="form-check-label" htmlFor={`schedule-${index}`}>
                                                     <span>{option.name}</span>
-                                                    <span className="text-muted">({option.count})</span>
+                                                    <span className="option-count">({option.count})</span>
                                                 </label>
                                             </div>
                                         ))}
                                     </div>
 
                                     {/* Hourly Rate */}
-                                    <div className="mb-4">
-                                        <div className="d-flex justify-content-between align-items-center mb-3">
-                                            <h6 className="fw-bold mb-0">Mức lương theo giờ</h6>
-                                            <span>⌄</span>
+                                    <div className="filter-section">
+                                        <div className="filter-header">
+                                            <h6 className="filter-title">Mức lương theo giờ</h6>
+                                            <button className="filter-toggle">⌄</button>
                                         </div>
                                         {filterOptions.hourlyRate.map((option, index) => (
-                                            <div key={index} className="form-check mb-2">
+                                            <div key={index} className="form-check">
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
                                                     id={`rate-${index}`}
-                                                    style={{ accentColor: '#ff6b35' }}
                                                     onChange={(e) => {
                                                         const [min, max] = parseSalary(option.name);
                                                         if (e.target.checked) {
@@ -797,9 +807,9 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
                                                         }
                                                     }}
                                                 />
-                                                <label className="form-check-label d-flex justify-content-between w-100" htmlFor={`rate-${index}`}>
+                                                <label className="form-check-label" htmlFor={`rate-${index}`}>
                                                     <span>{option.name}</span>
-                                                    <span className="text-muted">({option.count})</span>
+                                                    <span className="option-count">({option.count})</span>
                                                 </label>
                                             </div>
                                         ))}
@@ -870,39 +880,7 @@ const PartGOJobsPage = ({ onBackToHome, onSelectJob, onShowLogin, onShowSignUp }
 
 
                                 {/* Modern Pagination */}
-                                <div className="pagination-modern">
-                                    <nav>
-                                        <ul className="pagination-list">
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Previous">‹</a>
-                                            </li>
-                                            <li className="pagination-item active">
-                                                <a className="pagination-link" href="#" aria-label="Page 1">1</a>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Page 2">2</a>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Page 3">3</a>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Page 4">4</a>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Page 5">5</a>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <span className="pagination-ellipsis">...</span>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Page 33">33</a>
-                                            </li>
-                                            <li className="pagination-item">
-                                                <a className="pagination-link" href="#" aria-label="Next">›</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
+                                
 
                             </div>
                         </div>

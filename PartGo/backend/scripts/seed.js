@@ -50,6 +50,7 @@ async function seedUsers() {
             fullName: 'Nguyễn Văn A',
             phone: '0123456789',
             role: 'jobseeker',
+            isVerified: true,
             profile: {
                 bio: 'Sinh viên năm 3 ngành Công nghệ thông tin, có kinh nghiệm làm part-time',
                 skills: ['JavaScript', 'React', 'Node.js', 'Giao tiếp', 'Làm việc nhóm'],
@@ -86,6 +87,7 @@ async function seedUsers() {
             fullName: 'Trần Thị B',
             phone: '0987654321',
             role: 'jobseeker',
+            isVerified: true,
             profile: {
                 bio: 'Sinh viên năm 2 ngành Kinh tế, năng động và có kinh nghiệm bán hàng',
                 skills: ['Bán hàng', 'Giao tiếp', 'Tiếng Anh', 'Marketing', 'Customer Service'],
@@ -126,7 +128,7 @@ async function seedUsers() {
 async function seedCompanies() {
     console.log('🏢 Seeding companies...');
 
-    const companies = [
+    const companyData = [
         {
             email: 'sieuthihoalac@company.com',
             password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -215,12 +217,38 @@ async function seedCompanies() {
         }
     ];
 
-    const createdCompanies = await Company.insertMany(companies);
+    // Create companies first
+    const createdCompanies = await Company.insertMany(companyData);
     console.log(`✅ Created ${createdCompanies.length} companies`);
+
+    // Create employer users linked to companies
+    const employerUsers = companyData.map((company, index) => ({
+        email: company.email,
+        password: company.password,
+        fullName: company.name,
+        phone: company.phone,
+        role: 'employer',
+        isVerified: true,
+        companyId: createdCompanies[index]._id
+    }));
+
+    await User.insertMany(employerUsers);
+    console.log(`✅ Created ${employerUsers.length} employer users`);
+
     return createdCompanies;
 }
 
-async function seedJobs(companies) {
+// Helper function to generate slug
+function generateSlug(title) {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim('-');
+}
+
+async function seedJobs(companies, users) {
     console.log('💼 Seeding jobs...');
 
     const jobs = [
@@ -233,27 +261,31 @@ async function seedJobs(companies) {
             benefits: ['Lương cạnh tranh', 'Môi trường làm việc thân thiện', 'Được đào tạo kỹ năng'],
             category: 'Bán hàng',
             type: 'part-time',
+            level: 'fresher',
             location: {
                 address: '123 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
                 coordinates: { lat: 21.015, lng: 105.526 }
-            },
-            schedule: {
-                workDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                workHours: { start: '08:00', end: '12:00' },
-                flexibility: 'fixed'
             },
             salary: {
                 type: 'hourly',
                 min: 25000,
                 max: 35000,
-                currency: 'VND'
+                currency: 'VND',
+                isPublic: true
             },
             capacity: 10,
             applied: 15,
-            status: 'active',
+            status: 'published',
             priority: 'normal',
             tags: ['Bán hàng', 'Bán lẻ', 'Customer Service'],
-            deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+            skills: ['Giao tiếp', 'Bán hàng', 'Customer Service'],
+            experience: 'no-experience',
+            education: 'high-school',
+            deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Nhân viên bán hàng')
         },
         {
             title: 'Nhân viên phục vụ',
@@ -264,27 +296,31 @@ async function seedJobs(companies) {
             benefits: ['Lương + tip', 'Môi trường làm việc năng động', 'Được học hỏi kỹ năng'],
             category: 'Phục vụ',
             type: 'part-time',
+            level: 'fresher',
             location: {
                 address: '456 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
                 coordinates: { lat: 21.011, lng: 105.525 }
-            },
-            schedule: {
-                workDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-                workHours: { start: '12:00', end: '18:00' },
-                flexibility: 'flexible'
             },
             salary: {
                 type: 'hourly',
                 min: 20000,
                 max: 30000,
-                currency: 'VND'
+                currency: 'VND',
+                isPublic: true
             },
             capacity: 8,
             applied: 8,
-            status: 'active',
+            status: 'published',
             priority: 'normal',
             tags: ['Phục vụ', 'Nhà hàng', 'Cà phê'],
-            deadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000) // 20 days from now
+            skills: ['Phục vụ', 'Giao tiếp', 'Làm việc nhóm'],
+            experience: 'no-experience',
+            education: 'high-school',
+            deadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
+            createdBy: users[1]._id,
+            slug: generateSlug('Nhân viên phục vụ')
         },
         {
             title: 'Gia sư Toán',
@@ -295,27 +331,31 @@ async function seedJobs(companies) {
             benefits: ['Lương cao', 'Lịch làm việc linh hoạt', 'Được phát triển kỹ năng sư phạm'],
             category: 'Giáo dục',
             type: 'part-time',
+            level: 'junior',
             location: {
                 address: '789 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
                 coordinates: { lat: 21.017, lng: 105.523 }
-            },
-            schedule: {
-                workDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-                workHours: { start: '18:00', end: '22:00' },
-                flexibility: 'flexible'
             },
             salary: {
                 type: 'hourly',
                 min: 50000,
                 max: 80000,
-                currency: 'VND'
+                currency: 'VND',
+                isPublic: true
             },
             capacity: 12,
             applied: 8,
-            status: 'active',
+            status: 'published',
             priority: 'premium',
             tags: ['Giáo dục', 'Gia sư', 'Toán học'],
-            deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000) // 45 days from now
+            skills: ['Toán học', 'Giảng dạy', 'Giao tiếp'],
+            experience: '1-year',
+            education: 'university',
+            deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Gia sư Toán')
         },
         {
             title: 'Nhân viên văn phòng',
@@ -326,27 +366,31 @@ async function seedJobs(companies) {
             benefits: ['Môi trường làm việc chuyên nghiệp', 'Được đào tạo kỹ năng', 'Lương ổn định'],
             category: 'Văn phòng',
             type: 'part-time',
+            level: 'fresher',
             location: {
                 address: '123 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
                 coordinates: { lat: 21.015, lng: 105.526 }
-            },
-            schedule: {
-                workDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-                workHours: { start: '08:00', end: '12:00' },
-                flexibility: 'fixed'
             },
             salary: {
                 type: 'hourly',
                 min: 30000,
                 max: 40000,
-                currency: 'VND'
+                currency: 'VND',
+                isPublic: true
             },
             capacity: 5,
             applied: 0,
-            status: 'active',
+            status: 'published',
             priority: 'normal',
             tags: ['Văn phòng', 'Hành chính', 'Tin học'],
-            deadline: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000) // 25 days from now
+            skills: ['Microsoft Office', 'Giao tiếp', 'Tổ chức'],
+            experience: 'no-experience',
+            education: 'high-school',
+            deadline: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Nhân viên văn phòng')
         },
         {
             title: 'Nhân viên giao hàng',
@@ -357,27 +401,241 @@ async function seedJobs(companies) {
             benefits: ['Lương + phụ cấp xăng', 'Lịch làm việc linh hoạt', 'Được hỗ trợ bảo hiểm'],
             category: 'Giao hàng',
             type: 'part-time',
+            level: 'fresher',
             location: {
                 address: '123 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
                 coordinates: { lat: 21.015, lng: 105.526 }
-            },
-            schedule: {
-                workDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-                workHours: { start: '09:00', end: '17:00' },
-                flexibility: 'flexible'
             },
             salary: {
                 type: 'hourly',
                 min: 35000,
                 max: 50000,
-                currency: 'VND'
+                currency: 'VND',
+                isPublic: true
             },
             capacity: 8,
             applied: 5,
-            status: 'active',
+            status: 'published',
             priority: 'urgent',
             tags: ['Giao hàng', 'Vận chuyển', 'Logistics'],
-            deadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000) // 15 days from now
+            skills: ['Giao hàng', 'Giao tiếp', 'Tổ chức'],
+            experience: 'no-experience',
+            education: 'high-school',
+            deadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Nhân viên giao hàng')
+        },
+        {
+            title: 'Lập trình viên Frontend',
+            company: companies[0]._id,
+            description: 'Tuyển lập trình viên Frontend có kinh nghiệm với React.js. Làm việc part-time hoặc full-time tùy theo khả năng.',
+            requirements: ['Kinh nghiệm React.js', 'HTML, CSS, JavaScript', 'Hiểu biết API RESTful'],
+            responsibilities: ['Phát triển giao diện', 'Tối ưu hóa hiệu suất', 'Code review'],
+            benefits: ['Lương cạnh tranh', 'Làm việc remote', 'Phát triển kỹ năng'],
+            category: 'Công nghệ',
+            type: 'part-time',
+            level: 'junior',
+            location: {
+                address: '123 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
+                coordinates: { lat: 21.015, lng: 105.526 }
+            },
+            salary: {
+                type: 'hourly',
+                min: 80000,
+                max: 120000,
+                currency: 'VND',
+                isPublic: true
+            },
+            capacity: 3,
+            applied: 12,
+            status: 'published',
+            priority: 'premium',
+            tags: ['Lập trình', 'Frontend', 'React'],
+            skills: ['React.js', 'JavaScript', 'HTML', 'CSS'],
+            experience: '1-year',
+            education: 'university',
+            deadline: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Lập trình viên Frontend')
+        },
+        {
+            title: 'Nhân viên Marketing',
+            company: companies[1]._id,
+            description: 'Tuyển nhân viên Marketing part-time để hỗ trợ các chiến dịch quảng cáo trên mạng xã hội.',
+            requirements: ['Kinh nghiệm Social Media', 'Sáng tạo', 'Kỹ năng viết content'],
+            responsibilities: ['Tạo content', 'Quản lý Social Media', 'Phân tích dữ liệu'],
+            benefits: ['Lương linh hoạt', 'Học hỏi kỹ năng marketing', 'Môi trường sáng tạo'],
+            category: 'Marketing',
+            type: 'part-time',
+            level: 'fresher',
+            location: {
+                address: '456 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
+                coordinates: { lat: 21.011, lng: 105.525 }
+            },
+            salary: {
+                type: 'hourly',
+                min: 40000,
+                max: 60000,
+                currency: 'VND',
+                isPublic: true
+            },
+            capacity: 4,
+            applied: 6,
+            status: 'published',
+            priority: 'normal',
+            tags: ['Marketing', 'Social Media', 'Content'],
+            skills: ['Social Media', 'Content Writing', 'Giao tiếp'],
+            experience: 'no-experience',
+            education: 'college',
+            deadline: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000),
+            createdBy: users[1]._id,
+            slug: generateSlug('Nhân viên Marketing')
+        },
+        {
+            title: 'Gia sư Tiếng Anh',
+            company: companies[2]._id,
+            description: 'Tuyển gia sư dạy Tiếng Anh cho học sinh cấp 1, cấp 2. Phương pháp giảng dạy hiện đại, vui vẻ.',
+            requirements: ['Tiếng Anh thành thạo', 'Kỹ năng giảng dạy', 'Kiên nhẫn'],
+            responsibilities: ['Dạy kèm Tiếng Anh', 'Chuẩn bị bài giảng', 'Theo dõi tiến độ'],
+            benefits: ['Lương cao', 'Lịch linh hoạt', 'Phát triển sự nghiệp'],
+            category: 'Giáo dục',
+            type: 'part-time',
+            level: 'junior',
+            location: {
+                address: '789 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
+                coordinates: { lat: 21.017, lng: 105.523 }
+            },
+            salary: {
+                type: 'hourly',
+                min: 45000,
+                max: 75000,
+                currency: 'VND',
+                isPublic: true
+            },
+            capacity: 10,
+            applied: 7,
+            status: 'published',
+            priority: 'normal',
+            tags: ['Giáo dục', 'Gia sư', 'Tiếng Anh'],
+            skills: ['Tiếng Anh', 'Giảng dạy', 'Giao tiếp'],
+            experience: '1-year',
+            education: 'university',
+            deadline: new Date(Date.now() + 50 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Gia sư Tiếng Anh')
+        },
+        {
+            title: 'Nhân viên kho hàng',
+            company: companies[0]._id,
+            description: 'Tuyển nhân viên kho hàng part-time. Công việc bao gồm sắp xếp hàng, kiểm kê, đóng gói.',
+            requirements: ['Khỏe mạnh', 'Cẩn thận', 'Có kinh nghiệm kho hàng'],
+            responsibilities: ['Sắp xếp hàng', 'Kiểm kê', 'Đóng gói hàng'],
+            benefits: ['Lương ổn định', 'Môi trường làm việc an toàn', 'Được hỗ trợ bảo hiểm'],
+            category: 'Kho hàng',
+            type: 'part-time',
+            level: 'fresher',
+            location: {
+                address: '123 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
+                coordinates: { lat: 21.015, lng: 105.526 }
+            },
+            salary: {
+                type: 'hourly',
+                min: 28000,
+                max: 38000,
+                currency: 'VND',
+                isPublic: true
+            },
+            capacity: 6,
+            applied: 3,
+            status: 'published',
+            priority: 'normal',
+            tags: ['Kho hàng', 'Logistics', 'Vận chuyển'],
+            skills: ['Sắp xếp', 'Kiểm kê', 'Làm việc nhóm'],
+            experience: 'no-experience',
+            education: 'high-school',
+            deadline: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Nhân viên kho hàng')
+        },
+        {
+            title: 'Nhân viên bảo vệ',
+            company: companies[1]._id,
+            description: 'Tuyển nhân viên bảo vệ part-time cho khu vực Hòa Lạc. Công việc bao gồm tuần tra, kiểm soát ra vào.',
+            requirements: ['Khỏe mạnh', 'Trách nhiệm cao', 'Có chứng chỉ bảo vệ'],
+            responsibilities: ['Tuần tra', 'Kiểm soát ra vào', 'Báo cáo sự cố'],
+            benefits: ['Lương ổn định', 'Lịch làm việc linh hoạt', 'Được hỗ trợ bảo hiểm'],
+            category: 'Bảo vệ',
+            type: 'part-time',
+            level: 'fresher',
+            location: {
+                address: '456 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
+                coordinates: { lat: 21.011, lng: 105.525 }
+            },
+            salary: {
+                type: 'hourly',
+                min: 32000,
+                max: 45000,
+                currency: 'VND',
+                isPublic: true
+            },
+            capacity: 5,
+            applied: 2,
+            status: 'published',
+            priority: 'urgent',
+            tags: ['Bảo vệ', 'An ninh', 'Tuần tra'],
+            skills: ['Bảo vệ', 'Giao tiếp', 'Tỉnh táo'],
+            experience: 'no-experience',
+            education: 'high-school',
+            deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+            createdBy: users[1]._id,
+            slug: generateSlug('Nhân viên bảo vệ')
+        },
+        {
+            title: 'Nhân viên thiết kế đồ họa',
+            company: companies[0]._id,
+            description: 'Tuyển nhân viên thiết kế đồ họa part-time. Thiết kế poster, banner, hình ảnh cho các chiến dịch marketing.',
+            requirements: ['Thành thạo Photoshop/Figma', 'Sáng tạo', 'Có portfolio'],
+            responsibilities: ['Thiết kế đồ họa', 'Chỉnh sửa hình ảnh', 'Tạo content visual'],
+            benefits: ['Lương cạnh tranh', 'Làm việc remote', 'Phát triển kỹ năng'],
+            category: 'Thiết kế',
+            type: 'part-time',
+            level: 'junior',
+            location: {
+                address: '123 Đường Hòa Lạc, Thạch Thất, Hà Nội',
+                city: 'Hà Nội',
+                district: 'Thạch Thất',
+                coordinates: { lat: 21.015, lng: 105.526 }
+            },
+            salary: {
+                type: 'hourly',
+                min: 70000,
+                max: 100000,
+                currency: 'VND',
+                isPublic: true
+            },
+            capacity: 2,
+            applied: 9,
+            status: 'published',
+            priority: 'premium',
+            tags: ['Thiết kế', 'Đồ họa', 'Creative'],
+            skills: ['Photoshop', 'Figma', 'Sáng tạo'],
+            experience: '1-year',
+            education: 'college',
+            deadline: new Date(Date.now() + 38 * 24 * 60 * 60 * 1000),
+            createdBy: users[0]._id,
+            slug: generateSlug('Nhân viên thiết kế đồ họa')
         }
     ];
 
@@ -590,7 +848,7 @@ async function seedDatabase() {
 
         const users = await seedUsers();
         const companies = await seedCompanies();
-        const jobs = await seedJobs(companies);
+        const jobs = await seedJobs(companies, users);
         const applications = await seedApplications(users, jobs);
         const reviews = await seedReviews(users, jobs, companies);
         const notifications = await seedNotifications(users, jobs);

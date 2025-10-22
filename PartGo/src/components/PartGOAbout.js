@@ -8,7 +8,7 @@ export default function PartGOAbout() {
                 rel="stylesheet"
             />
             <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-                <div className="container py-5">
+                <div className="container" style={{ paddingTop: '120px', paddingBottom: '60px' }}>
                     <div className="text-center mb-5">
                         <h1 className="fw-bold" style={{ color: '#2c3e50' }}>Giới thiệu về PartGO</h1>
                         <p className="text-muted">Nền tảng tìm việc part-time dành cho sinh viên tại Hòa Lạc</p>

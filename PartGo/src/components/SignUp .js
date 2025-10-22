@@ -4,463 +4,1049 @@ import { useNotification } from '../contexts/NotificationContext';
 import EmailVerification from './EmailVerification';
 
 const SignUp = ({ isOpen, onClose, onSwitchToLogin }) => {
-    const { register, registerCompany, pendingVerification, verifyEmail, error, clearError } = useAuth();
-    const { success, error: showError, info } = useNotification();
-    const [signupData, setSignupData] = useState({
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [localError, setLocalError] = useState('');
-    const [userType, setUserType] = useState('jobseeker'); // 'jobseeker' or 'company'
-    const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const { register, registerCompany, pendingVerification, verifyEmail, error, clearError } = useAuth();
+  const { success, error: showError, info } = useNotification();
+  const [signupData, setSignupData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [localError, setLocalError] = useState('');
+  const [userType, setUserType] = useState('jobseeker');
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: '', color: '' });
 
-    // Only show email verification if this modal is open AND there's pending verification
-    const shouldShowEmailVerification = showEmailVerification && pendingVerification && isOpen;
+  const shouldShowEmailVerification = showEmailVerification && pendingVerification && isOpen;
 
-    // Auto-show email verification if there's pending verification when modal opens
-    useEffect(() => {
-        if (isOpen && pendingVerification && !showEmailVerification) {
-            setShowEmailVerification(true);
-        }
-    }, [isOpen, pendingVerification, showEmailVerification]);
+  useEffect(() => {
+    if (isOpen && pendingVerification && !showEmailVerification) {
+      setShowEmailVerification(true);
+    }
+  }, [isOpen, pendingVerification, showEmailVerification]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setSignupData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+  // Password strength calculator
+  const calculatePasswordStrength = (password) => {
+    let score = 0;
+    if (!password) return { score: 0, label: '', color: '' };
 
-        // Clear errors when user starts typing
-        if (localError) setLocalError('');
-        if (error) clearError();
-    };
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    if (score <= 2) return { score: 1, label: 'Yếu', color: '#FF3B30' };
+    if (score <= 4) return { score: 2, label: 'Trung bình', color: '#FF9500' };
+    if (score <= 5) return { score: 3, label: 'Mạnh', color: '#34C759' };
+    return { score: 4, label: 'Rất mạnh', color: '#30D158' };
+  };
 
-        // Validation
-        if (!signupData.fullName || !signupData.email || !signupData.password) {
-            setLocalError('Vui lòng nhập đầy đủ thông tin');
-            return;
-        }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSignupData(prev => ({ ...prev, [name]: value }));
 
-        if (signupData.password !== signupData.confirmPassword) {
-            setLocalError('Mật khẩu xác nhận không khớp');
-            return;
-        }
+    if (name === 'password') {
+      setPasswordStrength(calculatePasswordStrength(value));
+    }
 
-        if (signupData.password.length < 6) {
-            setLocalError('Mật khẩu phải có ít nhất 6 ký tự');
-            return;
-        }
+    if (localError) setLocalError('');
+    if (error) clearError();
+  };
 
-        try {
-            setIsLoading(true);
-            setLocalError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-            if (userType === 'company') {
-                // Register company using register-company endpoint
-                const companyData = {
-                    name: signupData.fullName,
-                    email: signupData.email,
-                    password: signupData.password,
-                    description: '', // You can add description field later
-                    address: '' // You can add address field later
-                };
+    if (!signupData.fullName || !signupData.email || !signupData.password) {
+      setLocalError('Vui lòng nhập đầy đủ thông tin');
+      return;
+    }
 
-                await registerCompany(companyData);
-            } else {
-                // Register job seeker using regular register endpoint
-                const userData = {
-                    fullName: signupData.fullName,
-                    email: signupData.email,
-                    password: signupData.password,
-                    role: 'jobseeker'
-                };
+    if (signupData.password !== signupData.confirmPassword) {
+      setLocalError('Mật khẩu xác nhận không khớp');
+      return;
+    }
 
-                await register(userData);
-            }
+    if (signupData.password.length < 6) {
+      setLocalError('Mật khẩu phải có ít nhất 6 ký tự');
+      return;
+    }
 
-            // Registration successful - show email verification
-            info('Vui lòng kiểm tra email để xác thực tài khoản', 'Đăng ký thành công');
-            setShowEmailVerification(true);
-        } catch (error) {
-            const errorMessage = error.message || 'Đăng ký thất bại';
-            setLocalError(errorMessage);
-            showError(errorMessage, 'Lỗi đăng ký');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    try {
+      setIsLoading(true);
+      setLocalError('');
 
-    const handleVerificationSuccess = (response) => {
-        setShowEmailVerification(false);
-        onClose();
-        // Show success message
-        success('Đăng ký thành công! Chào mừng bạn đến với PartGO!', 'Hoàn thành');
-    };
+      if (userType === 'company') {
+        const companyData = {
+          name: signupData.fullName,
+          email: signupData.email,
+          password: signupData.password,
+          description: '',
+          address: ''
+        };
+        await registerCompany(companyData);
+      } else {
+        const userData = {
+          fullName: signupData.fullName,
+          email: signupData.email,
+          password: signupData.password,
+          role: 'jobseeker'
+        };
+        await register(userData);
+      }
 
-    const handleCloseVerification = () => {
-        setShowEmailVerification(false);
-        onClose();
-    };
+      info('Vui lòng kiểm tra email để xác thực tài khoản', 'Đăng ký thành công');
+      setShowEmailVerification(true);
+    } catch (error) {
+      const errorMessage = error.message || 'Đăng ký thất bại';
+      setLocalError(errorMessage);
+      showError(errorMessage, 'Lỗi đăng ký');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <div>
-            {/* Email Verification Modal */}
-            {shouldShowEmailVerification && (
-                <EmailVerification
-                    userId={pendingVerification.userId}
-                    email={pendingVerification.email}
-                    onVerificationSuccess={handleVerificationSuccess}
-                    onClose={handleCloseVerification}
-                />
-            )}
+  const handleVerificationSuccess = (response) => {
+    setShowEmailVerification(false);
+    onClose();
+    success('Đăng ký thành công! Chào mừng bạn đến với PartGO!', 'Hoàn thành');
+  };
 
-            {/* Only show signup modal if isOpen is true */}
-            {isOpen && (
-                <>
-                    {/* Bootstrap CSS */}
-                    <link
-                        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-                        rel="stylesheet"
-                    />
+  const handleCloseVerification = () => {
+    setShowEmailVerification(false);
+    onClose();
+  };
 
-                    <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: showEmailVerification ? 1000 : 1050 }}>
-                        <div className="modal-dialog modal-xl" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                            <div className="modal-content" style={{ borderRadius: '0', border: 'none', minHeight: '100vh' }}>
-                                <div className="row g-0 h-100">
-                                    {/* Left Side - Illustration */}
-                                    <div className="col-lg-7" style={{ backgroundColor: '#f8f9fa', position: 'relative' }}>
-                                        <button
-                                            type="button"
-                                            className="btn-close position-absolute top-0 end-0 m-3"
-                                            onClick={onClose}
-                                            style={{ zIndex: 10 }}
-                                        ></button>
+  if (!isOpen) return null;
 
-                                        <div className="d-flex flex-column h-100 p-5">
-                                            {/* Logo */}
-                                            <div className="mb-4">
-                                                <div className="d-flex align-items-center">
-                                                    <div
-                                                        className="rounded-circle me-2 d-flex align-items-center justify-content-center"
-                                                        style={{
-                                                            width: '40px',
-                                                            height: '40px',
-                                                            backgroundColor: '#fff',
-                                                            border: '2px solid #e9ecef'
-                                                        }}
-                                                    >
-                                                        <span style={{ fontSize: '18px', color: '#6c757d' }}>👤</span>
-                                                    </div>
-                                                    <span className="fw-bold" style={{ fontSize: '24px', color: '#333' }}>
-                                                        Part GO
-                                                    </span>
-                                                </div>
-                                            </div>
+   return (
+    <>
+      {/* Thêm Google Fonts */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
 
-                                            {/* Stats */}
-                                            <div className="mb-5">
-                                                <div className="d-flex align-items-center mb-2">
-                                                    <div style={{
-                                                        width: '40px',
-                                                        height: '30px',
-                                                        background: 'linear-gradient(45deg, #ff6b35, #ff8a65)',
-                                                        borderRadius: '4px',
-                                                        marginRight: '12px'
-                                                    }}></div>
-                                                </div>
-                                                <h3 className="fw-bold mb-1" style={{ color: '#333' }}>100K+</h3>
-                                                <p className="text-muted">People got hired</p>
-                                            </div>
+      {/* Email Verification Modal */}
+      {shouldShowEmailVerification && (
+        <EmailVerification
+          userId={pendingVerification.userId}
+          email={pendingVerification.email}
+          onVerificationSuccess={handleVerificationSuccess}
+          onClose={handleCloseVerification}
+        />
+      )}
 
-                                            {/* Illustration area */}
-                                            <div className="flex-grow-1 d-flex align-items-center justify-content-center" style={{ position: 'relative' }}>
-                                                <div style={{ position: 'relative', width: '400px', height: '300px' }}>
-                                                    <div style={{
-                                                        position: 'absolute',
-                                                        top: '20px',
-                                                        left: '50px',
-                                                        width: '200px',
-                                                        height: '150px',
-                                                        background: 'linear-gradient(135deg, #e8f5e8, #c8e6c9)',
-                                                        borderRadius: '20px',
-                                                        transform: 'rotate(-10deg)',
-                                                        opacity: 0.7
-                                                    }}></div>
-                                                    <div style={{
-                                                        position: 'absolute',
-                                                        top: '80px',
-                                                        left: '150px',
-                                                        width: '180px',
-                                                        height: '120px',
-                                                        background: 'linear-gradient(135deg, #fff3e0, #ffcc80)',
-                                                        borderRadius: '15px',
-                                                        transform: 'rotate(10deg)',
-                                                        opacity: 0.8
-                                                    }}></div>
-                                                    <div style={{
-                                                        position: 'absolute',
-                                                        top: '140px',
-                                                        left: '20px',
-                                                        width: '160px',
-                                                        height: '100px',
-                                                        background: 'linear-gradient(135deg, #f3e5f5, #e1bee7)',
-                                                        borderRadius: '12px',
-                                                        transform: 'rotate(-5deg)',
-                                                        opacity: 0.6
-                                                    }}></div>
-                                                </div>
-                                            </div>
+      {/* Modal */}
+      <div className="apple-modal-overlay" onClick={onClose}>
+        <div className="apple-modal-container" onClick={(e) => e.stopPropagation()}>
+          <button className="apple-close-btn" onClick={onClose}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
 
-                                            {/* Testimonial */}
-                                            <div className="mt-auto">
-                                                <div className="d-flex align-items-start">
-                                                    <div className="me-3">
-                                                        <span style={{ fontSize: '24px', color: '#ff6b35' }}>❝</span>
-                                                    </div>
-                                                    <div>
-                                                        <p className="mb-2" style={{ fontStyle: 'italic', color: '#666' }}>
-                                                            "Great platform for the job seeker that searching for new career heights."
-                                                        </p>
-                                                        <div className="d-flex align-items-center">
-                                                            <div
-                                                                className="rounded-circle me-2 d-flex align-items-center justify-content-center"
-                                                                style={{
-                                                                    width: '40px',
-                                                                    height: '40px',
-                                                                    backgroundColor: '#ff6b35',
-                                                                    fontSize: '1.2rem'
-                                                                }}
-                                                            >
-                                                                <span style={{ filter: 'grayscale(100%) brightness(0) invert(1)' }}>👨</span>
-                                                            </div>
-                                                            <div>
-                                                                <div className="fw-medium" style={{ fontSize: '14px' }}>Adam Sandler</div>
-                                                                <div className="text-muted" style={{ fontSize: '12px' }}>Lead Engineer at Canva</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+          <div className="apple-modal-content">
+            {/* Left Side - Visual Section */}
+            <div className="apple-visual-section">
+              <div className="apple-logo">
+                <svg className="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <rect width="32" height="32" rx="8" fill="#34C759"/>
+                  <path d="M16 8L20 16H12L16 8Z" fill="white"/>
+                  <path d="M12 18L16 24L20 18H12Z" fill="white"/>
+                </svg>
+                <span className="logo-text">PartGO</span>
+              </div>
 
-                                    {/* Right Side - Sign Up Form */}
-                                    <div className="col-lg-5 d-flex align-items-center">
-                                        <div className="w-100 p-5">
-                                            {/* Job Seeker / Company Toggle */}
-                                            <div className="d-flex mb-4 justify-content-center">
-                                                <div className="d-flex" style={{ backgroundColor: '#f8f9fa', borderRadius: '25px', padding: '4px' }}>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm px-4"
-                                                        style={{
-                                                            backgroundColor: userType === 'jobseeker' ? '#ff6b35' : 'transparent',
-                                                            color: userType === 'jobseeker' ? 'white' : '#6c757d',
-                                                            borderRadius: '20px',
-                                                            border: 'none',
-                                                            fontWeight: '500'
-                                                        }}
-                                                        onClick={() => setUserType('jobseeker')}
-                                                        disabled={isLoading}
-                                                    >
-                                                        Job Seeker
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm px-4"
-                                                        style={{
-                                                            backgroundColor: userType === 'company' ? '#ff6b35' : 'transparent',
-                                                            color: userType === 'company' ? 'white' : '#6c757d',
-                                                            borderRadius: '20px',
-                                                            border: 'none',
-                                                            fontWeight: '500'
-                                                        }}
-                                                        onClick={() => setUserType('company')}
-                                                        disabled={isLoading}
-                                                    >
-                                                        Company
-                                                    </button>
-                                                </div>
-                                            </div>
+              <div className="stats-grid">
+                <div className="stat-card card-animated" style={{ animationDelay: '0.1s' }}>
+                  <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #34c759, #30d158)' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="stat-number">10K+</div>
+                    <div className="stat-label">Công việc hàng ngày</div>
+                  </div>
+                </div>
 
-                                            <div className="text-center mb-4">
-                                                <h2 className="fw-bold mb-2" style={{ color: '#333' }}>Nhận thêm</h2>
-                                                <h2 className="fw-bold" style={{ color: '#333' }}>cơ hội việc làm</h2>
-                                            </div>
+                <div className="stat-card card-animated" style={{ animationDelay: '0.2s' }}>
+                  <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #007AFF, #0051D5)' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="stat-number">5K+</div>
+                    <div className="stat-label">Công ty tuyển dụng</div>
+                  </div>
+                </div>
+              </div>
 
-                                            {/* Google Sign Up */}
-                                            <button className="btn w-100 mb-3 py-3 d-flex align-items-center justify-content-center" style={{
-                                                border: '1px solid #e9ecef',
-                                                borderRadius: '8px',
-                                                backgroundColor: 'white'
-                                            }}>
-                                                <span style={{ fontSize: '18px', marginRight: '12px' }}>🌐</span>
-                                                <span style={{ color: '#333', fontWeight: '500' }}>Đăng ký với Google</span>
-                                            </button>
+              <div className="feature-list">
+                <div className="feature-item">
+                  <div className="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-2 12l-4-4 1.41-1.41L8 11.17l6.59-6.59L16 6l-8 8z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div className="feature-text">
+                    <h4>Tìm việc dễ dàng</h4>
+                    <p>Hàng ngàn công việc phù hợp với kỹ năng của bạn</p>
+                  </div>
+                </div>
 
-                                            <div className="text-center mb-3">
-                                                <span className="text-muted">Hoặc đăng ký bằng email</span>
-                                            </div>
+                <div className="feature-item">
+                  <div className="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-2 12l-4-4 1.41-1.41L8 11.17l6.59-6.59L16 6l-8 8z" fill="white"/>
+                    </svg>
+                  </div>
+                  <div className="feature-text">
+                    <h4>Kết nối nhanh chóng</h4>
+                    <p>Liên hệ trực tiếp với nhà tuyển dụng</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                                            <form onSubmit={handleSubmit}>
-                                                {/* Error Message */}
-                                                {(localError || error) && (
-                                                    <div className="alert alert-danger mb-3" role="alert">
-                                                        {localError || error}
-                                                    </div>
-                                                )}
+            {/* Right Side - Form Section */}
+            <div className="apple-form-section">
+              <div className="form-header">
+                <h2 className="apple-form-title">Tạo tài khoản</h2>
+                <p className="apple-form-subtitle">Bắt đầu hành trình tìm việc của bạn</p>
+              </div>
 
-                                                {/* Full Name */}
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-medium" style={{ color: '#333' }}>
-                                                        {userType === 'company' ? 'Tên công ty' : 'Họ và tên'}
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="fullName"
-                                                        value={signupData.fullName}
-                                                        onChange={handleInputChange}
-                                                        placeholder={userType === 'company' ? 'Nhập tên công ty' : 'Nhập họ và tên của bạn'}
-                                                        style={{
-                                                            borderRadius: '8px',
-                                                            border: '1px solid #e9ecef',
-                                                            padding: '12px',
-                                                            fontSize: '16px'
-                                                        }}
-                                                        required
-                                                        disabled={isLoading}
-                                                    />
-                                                </div>
+              {/* User Type Toggle */}
+              <div className="apple-segmented-control">
+                <button
+                  type="button"
+                  className={`segment ${userType === 'jobseeker' ? 'active' : ''}`}
+                  onClick={() => setUserType('jobseeker')}
+                  disabled={isLoading}
+                >
+                  Tìm việc
+                </button>
+                <button
+                  type="button"
+                  className={`segment ${userType === 'company' ? 'active' : ''}`}
+                  onClick={() => setUserType('company')}
+                  disabled={isLoading}
+                >
+                  Tuyển dụng
+                </button>
+              </div>
 
-                                                {/* Email */}
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-medium" style={{ color: '#333' }}>Địa chỉ Email</label>
-                                                    <input
-                                                        type="email"
-                                                        className="form-control"
-                                                        name="email"
-                                                        value={signupData.email}
-                                                        onChange={handleInputChange}
-                                                        placeholder="Nhập địa chỉ email"
-                                                        style={{
-                                                            borderRadius: '8px',
-                                                            border: '1px solid #e9ecef',
-                                                            padding: '12px',
-                                                            fontSize: '16px'
-                                                        }}
-                                                        required
-                                                        disabled={isLoading}
-                                                    />
-                                                </div>
+              {/* Social Login */}
+              <button className="apple-social-btn" disabled={isLoading}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
+                  <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
+                  <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
+                  <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335"/>
+                </svg>
+                <span>Đăng ký với Google</span>
+              </button>
 
-                                                {/* Password */}
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-medium" style={{ color: '#333' }}>Mật khẩu</label>
-                                                    <input
-                                                        type="password"
-                                                        className="form-control"
-                                                        name="password"
-                                                        value={signupData.password}
-                                                        onChange={handleInputChange}
-                                                        placeholder="Nhập mật khẩu (ít nhất 6 ký tự)"
-                                                        style={{
-                                                            borderRadius: '8px',
-                                                            border: '1px solid #e9ecef',
-                                                            padding: '12px',
-                                                            fontSize: '16px'
-                                                        }}
-                                                        required
-                                                        disabled={isLoading}
-                                                    />
-                                                </div>
+              <div className="apple-divider">
+                <span>hoặc</span>
+              </div>
 
-                                                {/* Confirm Password */}
-                                                <div className="mb-4">
-                                                    <label className="form-label fw-medium" style={{ color: '#333' }}>Xác nhận mật khẩu</label>
-                                                    <input
-                                                        type="password"
-                                                        className="form-control"
-                                                        name="confirmPassword"
-                                                        value={signupData.confirmPassword}
-                                                        onChange={handleInputChange}
-                                                        placeholder="Nhập lại mật khẩu"
-                                                        style={{
-                                                            borderRadius: '8px',
-                                                            border: '1px solid #e9ecef',
-                                                            padding: '12px',
-                                                            fontSize: '16px'
-                                                        }}
-                                                        required
-                                                        disabled={isLoading}
-                                                    />
-                                                </div>
+              {/* Signup Form */}
+              <form onSubmit={handleSubmit} className="apple-form">
+                {localError && (
+                  <div className="apple-alert">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
+                      <path d="M8 4V9M8 11V12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    <span>{localError}</span>
+                  </div>
+                )}
 
-                                                {/* Submit Button */}
-                                                <button
-                                                    type="submit"
-                                                    className="btn w-100 py-3 fw-bold mb-4"
-                                                    style={{
-                                                        backgroundColor: isLoading ? '#ccc' : '#ff6b35',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                        border: 'none',
-                                                        fontSize: '16px'
-                                                    }}
-                                                    disabled={isLoading}
-                                                >
-                                                    {isLoading ? (
-                                                        <>
-                                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                                            Đang đăng ký...
-                                                        </>
-                                                    ) : (
-                                                        'Tiếp tục'
-                                                    )}
-                                                </button>
-                                            </form>
+                <div className="apple-form-group">
+                  <label className="apple-label">Họ và tên</label>
+                  <input
+                    type="text"
+                    className="apple-input"
+                    name="fullName"
+                    value={signupData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="Nhập họ và tên"
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
 
-                                            {/* Login Link */}
-                                            <p className="text-center mb-3">
-                                                <span className="text-muted">Đã có tài khoản? </span>
-                                                <button
-                                                    className="btn btn-link p-0 text-decoration-none fw-medium"
-                                                    style={{ color: '#ff6b35' }}
-                                                    onClick={onSwitchToLogin}
-                                                >
-                                                    Đăng nhập
-                                                </button>
-                                            </p>
+                <div className="apple-form-group">
+                  <label className="apple-label">Email</label>
+                  <input
+                    type="email"
+                    className="apple-input"
+                    name="email"
+                    value={signupData.email}
+                    onChange={handleInputChange}
+                    placeholder="your@email.com"
+                    required
+                    disabled={isLoading}
+                    autoComplete="email"
+                  />
+                </div>
 
-                                            {/* Terms */}
-                                            <p className="text-center text-muted" style={{ fontSize: '12px' }}>
-                                                Bằng cách nhấp Tiếp tục, bạn xác nhận rằng đã đọc
-                                                và chấp nhận{' '}
-                                                <a href="#" className="text-decoration-none" style={{ color: '#ff6b35' }}>
-                                                    Điều khoản dịch vụ
-                                                </a>{' '}
-                                                và{' '}
-                                                <a href="#" className="text-decoration-none" style={{ color: '#ff6b35' }}>
-                                                    Chính sách bảo mật
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div className="apple-form-group">
+                  <label className="apple-label">Mật khẩu</label>
+                  <input
+                    type="password"
+                    className="apple-input"
+                    name="password"
+                    value={signupData.password}
+                    onChange={handleInputChange}
+                    placeholder="••••••••"
+                    required
+                    disabled={isLoading}
+                    autoComplete="new-password"
+                  />
+                  {signupData.password && (
+                    <div className="password-strength">
+                      <div className="strength-bars">
+                        {[1, 2, 3, 4].map((i) => (
+                          <div
+                            key={i}
+                            className={`strength-bar ${i <= passwordStrength.score ? 'active' : ''}`}
+                            style={{ backgroundColor: i <= passwordStrength.score ? passwordStrength.color : '#E5E5E5' }}
+                          />
+                        ))}
+                      </div>
+                      <span className="strength-label" style={{ color: passwordStrength.color }}>
+                        {passwordStrength.label}
+                      </span>
                     </div>
-                </>
-            )}
+                  )}
+                </div>
+
+                <div className="apple-form-group">
+                  <label className="apple-label">Xác nhận mật khẩu</label>
+                  <input
+                    type="password"
+                    className="apple-input"
+                    name="confirmPassword"
+                    value={signupData.confirmPassword}
+                    onChange={handleInputChange}
+                    placeholder="••••••••"
+                    required
+                    disabled={isLoading}
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                <div className="terms-notice">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="7.5" stroke="currentColor" strokeWidth="1"/>
+                    <path d="M8 4V9M8 11V12" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+                  </svg>
+                  <p>
+                    Bằng cách đăng ký, bạn đồng ý với <a href="#" className="terms-link">Điều khoản dịch vụ</a> và <a href="#" className="terms-link">Chính sách bảo mật</a>
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  className="apple-primary-btn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="apple-spinner"></span>
+                      <span>Đang đăng ký...</span>
+                    </>
+                  ) : (
+                    'Tạo tài khoản'
+                  )}
+                </button>
+              </form>
+
+              <div className="apple-form-footer">
+                Đã có tài khoản?
+                <button
+                  type="button"
+                  className="apple-text-btn"
+                  onClick={onSwitchToLogin}
+                  disabled={isLoading}
+                >
+                  Đăng nhập
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+
+      {/* ============= STYLES ============= */}
+      <style jsx>{`
+        /* Reset & Base */
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Overlay */
+        .apple-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          padding: 20px;
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Modal Container */
+        .apple-modal-container {
+          background: #fff;
+          border-radius: 20px;
+          max-width: 1100px;
+          width: 100%;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          position: relative;
+          animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .signup-container {
+          max-height: 95vh;
+        }
+
+        /* Close Button */
+        .apple-close-btn {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.05);
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          z-index: 10;
+          color: #86868B;
+        }
+
+        .apple-close-btn:hover {
+          background: rgba(0, 0, 0, 0.1);
+          transform: scale(1.05);
+        }
+
+        /* Modal Content */
+        .apple-modal-content {
+          display: grid;
+          grid-template-columns: 1.2fr 1fr;
+          min-height: 600px;
+        }
+
+        /* Visual Section */
+        .apple-visual-section {
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          padding: 60px 50px;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          overflow-y: auto;
+          gap: 32px;
+        }
+
+        .apple-visual-section::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          right: -50%;
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(circle, rgba(52, 199, 89, 0.1) 0%, transparent 70%);
+          pointer-events: none;
+        }
+
+        /* Logo */
+        .apple-logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          position: relative;
+          z-index: 2;
+        }
+
+        .logo-icon {
+          filter: drop-shadow(0 4px 12px rgba(52, 199, 89, 0.3));
+        }
+
+        .logo-text {
+          font-size: 24px;
+          font-weight: 700;
+          color: #1D1D1F;
+          letter-spacing: -0.5px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 16px;
+          position: relative;
+          z-index: 2;
+        }
+
+        .stat-card {
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(20px);
+          border-radius: 16px;
+          padding: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-animated {
+          opacity: 0;
+          animation: slideInLeft 0.6s ease-out forwards;
+        }
+
+        .stat-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .stat-number {
+          font-size: 28px;
+          font-weight: 700;
+          color: #1D1D1F;
+          margin: 0;
+          letter-spacing: -1px;
+        }
+
+        .stat-label {
+          font-size: 13px;
+          color: #86868B;
+          margin: 0;
+          line-height: 1.4;
+        }
+
+        /* Feature List */
+        .feature-list {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          position: relative;
+          z-index: 2;
+        }
+
+        .feature-item {
+          display: flex;
+          gap: 12px;
+          background: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(20px);
+          padding: 16px;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+          background: rgba(255, 255, 255, 0.95);
+          transform: translateX(4px);
+        }
+
+        .feature-icon {
+          width: 40px;
+          height: 40px;
+          background: linear-gradient(135deg, #34c759, #30d158);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          color: white;
+        }
+
+        .feature-text h4 {
+          font-size: 14px;
+          font-weight: 600;
+          color: #1D1D1F;
+          margin: 0 0 4px 0;
+        }
+
+        .feature-text p {
+          font-size: 12px;
+          color: #86868B;
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        /* Form Section */
+        .apple-form-section {
+          padding: 60px 50px;
+          display: flex;
+          flex-direction: column;
+          overflow-y: auto;
+          background: white;
+          height: 100%;
+          max-height: 90vh;
+        }
+
+        /* Form Header */
+        .form-header {
+          text-align: center;
+          margin-bottom: 32px;
+        }
+
+        .apple-form-title {
+          font-size: 32px;
+          font-weight: 700;
+          color: #1D1D1F;
+          margin: 0 0 8px 0;
+          letter-spacing: -1px;
+        }
+
+        .apple-form-subtitle {
+          font-size: 15px;
+          color: #86868B;
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        /* Segmented Control */
+        .apple-segmented-control {
+          display: flex;
+          background: #F5F5F7;
+          border-radius: 10px;
+          padding: 3px;
+          margin: 0 0 32px 0;
+        }
+
+        .segment {
+          flex: 1;
+          padding: 10px 16px;
+          border: none;
+          background: transparent;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          color: #86868B;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .segment.active {
+          background: white;
+          color: #1D1D1F;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .segment:hover:not(.active):not(:disabled) {
+          color: #1D1D1F;
+        }
+
+        .segment:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Social Button */
+        .apple-social-btn {
+          width: 100%;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          background: white;
+          border: 1.5px solid #E5E5E5;
+          border-radius: 12px;
+          font-size: 15px;
+          font-weight: 500;
+          color: #1D1D1F;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-bottom: 24px;
+        }
+
+        .apple-social-btn:hover:not(:disabled) {
+          background: #F5F5F7;
+          border-color: #D1D1D1;
+          transform: translateY(-1px);
+        }
+
+        .apple-social-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Divider */
+        .apple-divider {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin: 24px 0;
+          color: #86868B;
+          font-size: 13px;
+        }
+
+        .apple-divider::before,
+        .apple-divider::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: #E5E5E5;
+        }
+
+        /* Form */
+        .apple-form {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        /* Alert */
+        .apple-alert {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          background: rgba(255, 59, 48, 0.08);
+          border: 1px solid rgba(255, 59, 48, 0.2);
+          border-radius: 10px;
+          color: #FF3B30;
+          font-size: 14px;
+          animation: shake 0.3s ease-in-out;
+        }
+
+        /* Form Group */
+        .apple-form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .apple-label {
+          font-size: 14px;
+          font-weight: 500;
+          color: #1D1D1F;
+        }
+
+        /* Input with Icon */
+        .input-with-icon {
+          position: relative;
+        }
+
+        .input-icon {
+          position: absolute;
+          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #86868B;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .apple-input {
+          height: 48px;
+          padding: 0 16px;
+          background: #F5F5F7;
+          border: 1.5px solid transparent;
+          border-radius: 10px;
+          font-size: 15px;
+          color: #1D1D1F;
+          transition: all 0.3s ease;
+          width: 100%;
+        }
+
+        .apple-input.with-icon {
+          padding-left: 48px;
+          padding-right: 48px;
+        }
+
+        .apple-input:focus {
+          outline: none;
+          background: white;
+          border-color: #007AFF;
+          box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .apple-input::placeholder {
+          color: #86868B;
+        }
+
+        .apple-input:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Validation Icon */
+        .validation-icon {
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          animation: scaleIn 0.2s ease-out;
+          z-index: 1;
+        }
+
+        /* Password Strength */
+        .password-strength {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-top: 8px;
+        }
+
+        .strength-bars {
+          display: flex;
+          gap: 4px;
+          flex: 1;
+        }
+
+        .strength-bar {
+          height: 4px;
+          flex: 1;
+          background: #E5E5E5;
+          border-radius: 2px;
+          transition: all 0.3s ease;
+        }
+
+        .strength-bar.active {
+          transform: scaleY(1.2);
+        }
+
+        .strength-label {
+          font-size: 12px;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        /* Terms Notice */
+        .terms-notice {
+          display: flex;
+          gap: 12px;
+          padding: 12px 16px;
+          background: rgba(0, 122, 255, 0.05);
+          border: 1px solid rgba(0, 122, 255, 0.1);
+          border-radius: 10px;
+          font-size: 13px;
+          color: #86868B;
+          line-height: 1.5;
+        }
+
+        .terms-notice svg {
+          flex-shrink: 0;
+          margin-top: 2px;
+          color: #007AFF;
+        }
+
+        .terms-notice p {
+          margin: 0;
+        }
+
+        .terms-link {
+          color: #007AFF;
+          text-decoration: none;
+          font-weight: 500;
+          transition: opacity 0.3s ease;
+        }
+
+        .terms-link:hover {
+          opacity: 0.7;
+        }
+
+        /* Primary Button */
+        .apple-primary-btn {
+          height: 48px;
+          background: #007AFF;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          font-size: 15px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 8px;
+        }
+
+        .apple-primary-btn:hover:not(:disabled) {
+          background: #0051D5;
+          transform: translateY(-1px);
+          box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+        }
+
+        .apple-primary-btn:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        .apple-primary-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Spinner */
+        .apple-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.6s linear infinite;
+        }
+
+        /* Form Footer */
+        .apple-form-footer {
+          text-align: center;
+          margin-top: 24px;
+          font-size: 14px;
+          color: #86868B;
+        }
+
+        .apple-text-btn {
+          background: none;
+          border: none;
+          color: #007AFF;
+          font-weight: 600;
+          cursor: pointer;
+          margin-left: 6px;
+          transition: opacity 0.3s ease;
+          padding: 0;
+        }
+
+        .apple-text-btn:hover:not(:disabled) {
+          opacity: 0.7;
+        }
+
+        .apple-text-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: translateY(-50%) scale(0.5);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+          }
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-8px); }
+          75% { transform: translateX(8px); }
+        }
+
+        /* Scrollbar */
+        .apple-visual-section::-webkit-scrollbar,
+        .apple-form-section::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .apple-visual-section::-webkit-scrollbar-thumb,
+        .apple-form-section::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+          .apple-modal-content {
+            grid-template-columns: 1fr;
+          }
+          .apple-visual-section {
+            display: none;
+          }
+          .apple-form-section {
+            padding: 40px 30px;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .apple-modal-container {
+            border-radius: 0;
+            max-height: 100vh;
+            height: 100vh;
+          }
+          .apple-form-section {
+            padding: 30px 20px;
+          }
+          .apple-form-title {
+            font-size: 28px;
+          }
+        }
+      `}</style>
+    </>
+  );
 };
 
 export default SignUp;

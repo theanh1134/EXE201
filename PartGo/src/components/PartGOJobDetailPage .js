@@ -6,9 +6,10 @@ import { useNotification } from '../contexts/NotificationContext';
 import { fetchJobById, applyToJob } from '../services/jobsAPI';
 import api from '../services/authAPI';
 import { useParams } from 'react-router-dom';
+import './PartGOJobDetailPage.css';
 const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp }) => {
     const { id: routeId } = useParams();
-    const { logout } = useAuth();
+    const { user, isAuthenticated, logout } = useAuth();
     const { success, error: showError, warning, info } = useNotification();
     const [showApplicationModal, setShowApplicationModal] = useState(false);
     const [userCoords, setUserCoords] = useState(null);
@@ -210,6 +211,15 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
             finally { setLoading(false); }
         })();
     }, [jobId]);
+
+    const handleApplyClick = () => {
+        if (!isAuthenticated) {
+            warning('Vui lòng đăng nhập để ứng tuyển', 'Cần đăng nhập');
+            if (onShowLogin) onShowLogin();
+            return;
+        }
+        setShowApplicationModal(true);
+    };
 
     const openMapForJob = () => {
         console.log('🗺️ Opening map for job:', {
@@ -579,7 +589,7 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                 rel="stylesheet"
             />
 
-            <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+            <div className="job-detail-container">
 
                 {/* Header */}
                 <Header
@@ -587,10 +597,10 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                     onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
                     onShowLogin={onShowLogin}
                     onShowSignUp={onShowSignUp}
-                    onLogout={() => logout(() => window.location.href = '/')}
+                    onLogout={() => logout(() => window.location.href = '/jobs')}
                 />
                 {/* Main Content */}
-                <div className="container py-4">
+                <div className="container" style={{ paddingTop: '100px', paddingBottom: '40px' }}>
 
                     {/* Breadcrumb */}
                     <nav aria-label="breadcrumb" className="mb-4">
@@ -625,187 +635,169 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                         <div className="col-lg-8">
 
                             {/* Job Header */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
+                            <div className="job-header-card">
                                 <div className="d-flex justify-content-between align-items-start">
                                     <div className="d-flex">
                                         <div
-                                            className="me-4 d-flex align-items-center justify-content-center rounded-3"
+                                            className="job-logo-circle"
                                             style={{
-                                                width: '80px',
-                                                height: '80px',
-                                                backgroundColor: jobDetail.color,
-                                                fontSize: '2.5rem'
+                                                backgroundColor: jobDetail.color
                                             }}
                                         >
-                                            <span style={{ filter: 'grayscale(100%) brightness(0) invert(1)' }}>
-                                                {jobDetail.logo}
-                                            </span>
+                                            {jobDetail.logo}
                                         </div>
                                         <div>
-                                            <h1 className="fw-bold mb-2" style={{ color: '#2c3e50', fontSize: '32px' }}>
+                                            <h1 className="job-title-detail">
                                                 {jobDetail.title}
                                             </h1>
-                                            <p className="text-muted mb-0" style={{ fontSize: '16px' }}>
+                                            <p className="job-meta">
                                                 {jobDetail.company} • {jobDetail.location} • {jobDetail.type}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="d-flex gap-2">
                                         <button
-                                            className="btn px-4 py-3"
-                                            onClick={() => setShowApplicationModal(true)}
-                                            style={{
-                                                backgroundColor: '#ff6b35',
-                                                color: 'white',
-                                                fontWeight: '600',
-                                                fontSize: '16px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                minWidth: '100px'
-                                            }}
+                                            className="btn-apply-primary"
+                                            onClick={handleApplyClick}
                                         >
-                                            Ứng tuyển
+                                            ✓ Ứng tuyển
                                         </button>
                                         <button
-                                            className="btn btn-outline-secondary px-4 py-3"
+                                            className="btn-secondary-action"
                                             onClick={openMapForJob}
                                             title={geoError ? geoError : 'Xem bản đồ từ vị trí hiện tại đến nơi làm việc'}
-                                            style={{ borderRadius: '8px', minWidth: '100px' }}
                                         >
-                                            Xem bản đồ
+                                            🗺️ Xem bản đồ
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Job Description */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Mô tả công việc</h3>
-                                <p className="text-muted" style={{ lineHeight: '1.6' }}>
+                            <div className="content-card">
+                                <h3 className="section-heading">📝 Mô tả công việc</h3>
+                                <p className="list-item-text">
                                     {jobDetail.description}
                                 </p>
                             </div>
 
                             {/* Responsibilities */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Trách nhiệm</h3>
-                                <ul className="list-unstyled">
+                            <div className="content-card">
+                                <h3 className="section-heading">✓ Trách nhiệm</h3>
+                                <div>
                                     {jobDetail.responsibilities.map((item, index) => (
-                                        <li key={index} className="d-flex mb-3">
-                                            <span className="me-3 text-success">✓</span>
-                                            <span className="text-muted" style={{ lineHeight: '1.6' }}>{item}</span>
-                                        </li>
+                                        <div key={index} className="list-item-apple">
+                                            <span className="list-item-icon">✓</span>
+                                            <span className="list-item-text">{item}</span>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
 
                             {/* Who You Are */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Bạn là ai</h3>
-                                <ul className="list-unstyled">
+                            <div className="content-card">
+                                <h3 className="section-heading">👤 Bạn là ai</h3>
+                                <div>
                                     {jobDetail.whoYouAre.map((item, index) => (
-                                        <li key={index} className="d-flex mb-3">
-                                            <span className="me-3 text-success">✓</span>
-                                            <span className="text-muted" style={{ lineHeight: '1.6' }}>{item}</span>
-                                        </li>
+                                        <div key={index} className="list-item-apple">
+                                            <span className="list-item-icon">✓</span>
+                                            <span className="list-item-text">{item}</span>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
 
                             {/* Nice-To-Haves */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Ưu tiên có</h3>
-                                <ul className="list-unstyled">
+                            <div className="content-card">
+                                <h3 className="section-heading">⭐ Ưu tiên có</h3>
+                                <div>
                                     {jobDetail.niceToHaves.map((item, index) => (
-                                        <li key={index} className="d-flex mb-3">
-                                            <span className="me-3 text-success">✓</span>
-                                            <span className="text-muted" style={{ lineHeight: '1.6' }}>{item}</span>
-                                        </li>
+                                        <div key={index} className="list-item-apple">
+                                            <span className="list-item-icon">✓</span>
+                                            <span className="list-item-text">{item}</span>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
 
                             {/* Perks & Benefits */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h3 className="fw-bold mb-4" style={{ color: '#2c3e50' }}>Phúc lợi & Lợi ích</h3>
-                                <p className="text-muted mb-4">Công việc này đi kèm với nhiều phúc lợi và lợi ích</p>
+                            <div className="content-card">
+                                <h3 className="section-heading">🎁 Phúc lợi & Lợi ích</h3>
+                                <p className="list-item-text mb-4">Công việc này đi kèm với nhiều phúc lợi và lợi ích hấp dẫn</p>
 
-                                <div className="row g-4">
+                                <div className="benefits-grid">
                                     {jobDetail.benefits.map((benefit, index) => (
-                                        <div key={index} className="col-md-6">
-                                            <div className="text-center p-3">
-                                                <div className="mb-3" style={{ fontSize: '2.5rem' }}>
-                                                    {benefit.icon}
-                                                </div>
-                                                <h6 className="fw-bold mb-2">{benefit.title}</h6>
-                                                <p className="text-muted small" style={{ lineHeight: '1.5' }}>
-                                                    {benefit.desc}
-                                                </p>
+                                        <div key={index} className="benefit-card">
+                                            <div className="benefit-icon">
+                                                {benefit.icon}
                                             </div>
+                                            <h6 className="benefit-title">{benefit.title}</h6>
+                                            <p className="benefit-desc">
+                                                {benefit.desc}
+                                            </p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
                             {/* Reviews */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h3 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>Đánh giá về công việc này</h3>
+                            <div className="content-card">
+                                <div className="d-flex justify-content-between align-items-center mb-4">
+                                    <h3 className="section-heading mb-0">⭐ Đánh giá về công việc này</h3>
                                     <div className="d-flex align-items-center">
-                                        <span className="me-2" style={{ color: '#ff6b35', fontSize: '18px' }}>★</span>
-                                        <span className="fw-bold" style={{ color: '#2c3e50' }}>{jobDetail.ratingAverage.toFixed(1)}</span>
-                                        <span className="text-muted ms-2">({jobDetail.ratingCount} đánh giá)</span>
+                                        <span style={{ color: '#ff9500', fontSize: '18px', marginRight: '8px' }}>★</span>
+                                        <span style={{ fontWeight: '700', color: '#1d1d1f', fontSize: '16px' }}>{jobDetail.ratingAverage.toFixed(1)}</span>
+                                        <span style={{ color: '#86868b', marginLeft: '8px', fontSize: '14px' }}>({jobDetail.ratingCount} đánh giá)</span>
                                     </div>
                                 </div>
 
-                                <div className="list-group list-group-flush">
+                                <div>
                                     {jobDetail.reviews.slice(0, 3).map((review, index) => (
-                                        <div key={index} className="list-group-item px-0">
-                                            <div className="d-flex justify-content-between align-items-start mb-1">
+                                        <div key={index} className="review-item">
+                                            <div className="d-flex justify-content-between align-items-start mb-2">
                                                 <div>
-                                                    <h6 className="fw-bold mb-1" style={{ color: '#2c3e50' }}>{review.reviewer}</h6>
-                                                    <div>
+                                                    <div className="reviewer-name">{review.reviewer}</div>
+                                                    <div className="review-rating">
                                                         {Array.from({ length: 5 }).map((_, i) => (
-                                                            <span key={i} style={{ color: i < review.rating ? '#ff6b35' : '#e0e0e0' }}>★</span>
+                                                            <span key={i} style={{ color: i < review.rating ? '#ff9500' : '#d5d5d7', marginRight: '2px' }}>★</span>
                                                         ))}
                                                     </div>
                                                 </div>
-                                                <small className="text-muted">{review.date}</small>
+                                                <span style={{ color: '#a1a1a6', fontSize: '12px' }}>{review.date}</span>
                                             </div>
-                                            <p className="text-muted mb-0" style={{ lineHeight: '1.6' }}>{review.content}</p>
+                                            <p className="review-content">{review.content}</p>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="text-end mt-3">
-                                    <button className="btn btn-sm btn-outline-secondary">Xem tất cả đánh giá</button>
+                                <div className="text-end mt-4">
+                                    <button className="btn-secondary-action" style={{ padding: '8px 16px', fontSize: '14px' }}>Xem tất cả đánh giá →</button>
                                 </div>
                             </div>
 
                             {/* Company Info */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <div className="d-flex align-items-center">
+                            <div className="content-card">
+                                <div className="d-flex align-items-center mb-4">
                                     <div
-                                        className="me-3 d-flex align-items-center justify-content-center rounded-3"
+                                        className="job-logo-circle"
                                         style={{
                                             width: '60px',
                                             height: '60px',
+                                            marginRight: '16px',
                                             backgroundColor: jobDetail.color,
                                             fontSize: '1.8rem'
                                         }}
                                     >
-                                        <span style={{ filter: 'grayscale(100%) brightness(0) invert(1)' }}>
-                                            {jobDetail.logo}
-                                        </span>
+                                        {jobDetail.logo}
                                     </div>
                                     <div className="flex-grow-1">
-                                        <h5 className="fw-bold mb-1">{jobDetail.company}</h5>
-                                        <p className="text-muted small mb-0">Về Siêu thị Hòa Lạc - 4</p>
+                                        <h5 style={{ fontWeight: '700', color: '#1d1d1f', marginBottom: '4px' }}>{jobDetail.company}</h5>
+                                        <p style={{ color: '#86868b', fontSize: '13px', marginBottom: '0' }}>Về công ty này</p>
                                     </div>
                                 </div>
-                                <div className="mt-3">
-                                    <p className="text-muted small">
-                                        Siêu thị Hòa Lạc là một chuỗi siêu thị uy tín tại Hòa Lạc, Hà Nội. Chúng tôi cung cấp các sản phẩm chất lượng cao và dịch vụ khách hàng tốt nhất.
+                                <div>
+                                    <p className="list-item-text">
+                                        {jobDetail.company} là một công ty uy tín tại Hòa Lạc, Hà Nội. Chúng tôi cung cấp các sản phẩm chất lượng cao và dịch vụ khách hàng tốt nhất.
                                     </p>
                                 </div>
                             </div>
@@ -816,29 +808,29 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                         <div className="col-lg-4">
 
                             {/* About this role */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Về vị trí này</h5>
-                                <div className="mb-3">
-                                    <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Ứng tuyển trước</span>
-                                        <span className="fw-medium">{jobDetail.about.employeeCount}</span>
+                            <div className="sidebar-card">
+                                <h5 className="sidebar-heading">ℹ️ Về vị trí này</h5>
+                                <div>
+                                    <div className="info-row">
+                                        <span className="info-label">Ứng tuyển trước</span>
+                                        <span className="info-value">{jobDetail.about.employeeCount}</span>
                                     </div>
-                                    <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Đăng tuyển ngày</span>
-                                        <span className="fw-medium">{jobDetail.about.industry}</span>
+                                    <div className="info-row">
+                                        <span className="info-label">Đăng tuyển ngày</span>
+                                        <span className="info-value">{jobDetail.about.industry}</span>
                                     </div>
-                                    <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Loại công việc</span>
-                                        <span className="fw-medium">{jobDetail.about.stage}</span>
+                                    <div className="info-row">
+                                        <span className="info-label">Loại công việc</span>
+                                        <span className="info-value">{jobDetail.about.stage}</span>
                                     </div>
-                                    <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Mức lương</span>
-                                        <span className="fw-medium">{jobDetail.about.salary}</span>
+                                    <div className="info-row">
+                                        <span className="info-label">Mức lương</span>
+                                        <span className="info-value">{jobDetail.about.salary}</span>
                                     </div>
                                     {jobDetail.fullAddress && (
-                                        <div className="d-flex justify-content-between">
-                                            <span className="text-muted">Địa chỉ</span>
-                                            <span className="fw-medium text-end" style={{ maxWidth: '60%', fontSize: '14px' }}>
+                                        <div className="info-row">
+                                            <span className="info-label">Địa chỉ</span>
+                                            <span className="info-value text-end" style={{ maxWidth: '60%', fontSize: '13px' }}>
                                                 {jobDetail.fullAddress}
                                             </span>
                                         </div>
@@ -847,29 +839,29 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                             </div>
 
                             {/* Categories */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Danh mục</h5>
+                            <div className="sidebar-card">
+                                <h5 className="sidebar-heading">📂 Danh mục</h5>
                                 <div className="d-flex flex-wrap gap-2">
-                                    <span className="badge px-3 py-2" style={{ backgroundColor: '#fff3cd', color: '#856404', borderRadius: '20px' }}>
+                                    <span className="badge-apple badge-category">
                                         Marketing
                                     </span>
-                                    <span className="badge px-3 py-2" style={{ backgroundColor: '#e1f5fe', color: '#0277bd', borderRadius: '20px' }}>
+                                    <span className="badge-apple badge-category">
                                         Bán hàng
                                     </span>
                                 </div>
                             </div>
 
                             {/* Required Skills */}
-                            <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-                                <h5 className="fw-bold mb-3" style={{ color: '#2c3e50' }}>Kỹ năng yêu cầu</h5>
+                            <div className="sidebar-card">
+                                <h5 className="sidebar-heading">🎯 Kỹ năng yêu cầu</h5>
                                 <div className="d-flex flex-wrap gap-2">
-                                    <span className="badge px-3 py-2" style={{ backgroundColor: '#f0f9f0', color: '#2e7d32', borderRadius: '20px' }}>
+                                    <span className="badge-apple badge-skill">
                                         Bán hàng
                                     </span>
-                                    <span className="badge px-3 py-2" style={{ backgroundColor: '#e8f5e8', color: '#1b5e20', borderRadius: '20px' }}>
+                                    <span className="badge-apple badge-skill">
                                         Giao tiếp
                                     </span>
-                                    <span className="badge px-3 py-2" style={{ backgroundColor: '#fff8e1', color: '#f57600', borderRadius: '20px' }}>
+                                    <span className="badge-apple badge-skill">
                                         Tư vấn khách hàng
                                     </span>
                                 </div>
@@ -881,11 +873,13 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                     {/* Similar Jobs */}
                     <div className="mt-5">
                         <div className="d-flex justify-content-between align-items-center mb-4">
-                            <h3 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>Việc làm tương tự</h3>
+                            <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#1d1d1f', marginBottom: '0' }}>
+                                💼 Việc làm tương tự
+                            </h3>
                             <button
                                 className="btn btn-link text-decoration-none p-0"
                                 onClick={onBackToJobs}
-                                style={{ color: '#ff6b35' }}
+                                style={{ color: '#007aff', fontWeight: '600', fontSize: '15px' }}
                             >
                                 Xem tất cả việc làm →
                             </button>
@@ -894,37 +888,32 @@ const PartGOJobDetailPage = ({ jobId, onBackToJobs, onShowLogin, onShowSignUp })
                         <div className="row">
                             {jobDetail.similarJobs.map((job, index) => (
                                 <div key={index} className="col-lg-3 col-md-6 mb-4">
-                                    <div className="bg-white p-3 rounded-3 shadow-sm h-100">
+                                    <div className="content-card" style={{ height: '100%', cursor: 'pointer', transition: 'all 0.3s' }}>
                                         <div className="d-flex align-items-center mb-3">
                                             <div
-                                                className="me-2 d-flex align-items-center justify-content-center rounded"
+                                                className="me-3 d-flex align-items-center justify-content-center rounded"
                                                 style={{
                                                     width: '40px',
                                                     height: '40px',
                                                     backgroundColor: job.color,
-                                                    fontSize: '1.2rem'
+                                                    fontSize: '1.2rem',
+                                                    flexShrink: 0
                                                 }}
                                             >
-                                                <span style={{ filter: 'grayscale(100%) brightness(0) invert(1)' }}>
-                                                    {job.logo}
-                                                </span>
+                                                {job.logo}
                                             </div>
                                             <div className="min-width-0">
-                                                <h6 className="fw-bold mb-0 small text-truncate">{job.title}</h6>
-                                                <p className="text-muted mb-0 small">{job.company} • {job.location}</p>
+                                                <h6 style={{ fontWeight: '600', marginBottom: '0', fontSize: '14px', color: '#1d1d1f', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{job.title}</h6>
+                                                <p style={{ color: '#86868b', marginBottom: '0', fontSize: '12px' }}>{job.company}</p>
                                             </div>
                                         </div>
-                                        <div className="d-flex flex-wrap gap-1 mb-3">
+                                        <p style={{ color: '#a1a1a6', fontSize: '12px', marginBottom: '12px' }}>📍 {job.location}</p>
+                                        <div className="d-flex flex-wrap gap-1">
                                             {job.tags.map((tag, tagIndex) => (
                                                 <span
                                                     key={tagIndex}
-                                                    className="badge px-2 py-1"
-                                                    style={{
-                                                        backgroundColor: '#e8f5e8',
-                                                        color: '#1b5e20',
-                                                        fontSize: '10px',
-                                                        borderRadius: '12px'
-                                                    }}
+                                                    className="badge-apple badge-skill"
+                                                    style={{ fontSize: '11px', padding: '4px 10px' }}
                                                 >
                                                     {tag}
                                                 </span>

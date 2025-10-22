@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useAppNavigation } from './hooks/useAppNavigation';
 import { NotificationProvider } from './contexts/NotificationContext';
@@ -118,7 +118,11 @@ function AppContent() {
 
       {/* Routes */}
       <Routes>
-        <Route path="/" element={
+        {/* Redirect root to jobs page - "Vào việc luôn" strategy */}
+        <Route path="/" element={<Navigate to="/jobs" replace />} />
+
+        {/* Homepage - kept for reference/future use */}
+        <Route path="/home" element={
           <PartGOHomepage
             onShowAllJobs={() => goToJobs(openLoginModal)}
             onOpenCv={() => goToCV(openLoginModal)}
@@ -128,17 +132,16 @@ function AppContent() {
             onShowSignUp={openSignUpModal}
           />
         } />
+
+        {/* Jobs listing page - now the main entry point */}
+        {/* Anyone can view jobs, login only required for applying */}
         <Route path="/jobs" element={
-          userIsAuthenticated ? (
-            <PartGOJobsPage
-              onBackToHome={goToHome}
-              onSelectJob={goToJobDetail}
-              onShowLogin={openLoginModal}
-              onShowSignUp={openSignUpModal}
-            />
-          ) : (
-            <LoginGateHome />
-          )
+          <PartGOJobsPage
+            onBackToHome={goToHome}
+            onSelectJob={goToJobDetail}
+            onShowLogin={openLoginModal}
+            onShowSignUp={openSignUpModal}
+          />
         } />
         <Route path="/job/:id" element={
           <PartGOJobDetailPage

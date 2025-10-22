@@ -364,9 +364,9 @@ ${cvData.certifications.join(', ')}
                         onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
                         onShowLogin={() => { }}
                         onShowSignUp={() => { }}
-                        onLogout={() => window.location.href = '/'}
+                        onLogout={() => window.location.href = '/jobs'}
                     />
-                    <div className="container py-5">
+                    <div className="container" style={{ paddingTop: '100px', paddingBottom: '40px' }}>
                         <div className="row justify-content-center">
                             <div className="col-md-6 text-center">
                                 <div className="bg-white p-5 rounded-3 shadow-sm">
@@ -409,11 +409,11 @@ ${cvData.certifications.join(', ')}
                     onOpenCompanyDashboard={() => window.location.href = '/company-dashboard'}
                     onShowLogin={() => { }}
                     onShowSignUp={() => { }}
-                    onLogout={() => window.location.href = '/'}
+                    onLogout={() => window.location.href = '/jobs'}
                 />
 
                 {/* Main Content */}
-                <div className="container py-4">
+                <div className="container" style={{ paddingTop: '100px', paddingBottom: '40px' }}>
                     {/* Page Header */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <div>

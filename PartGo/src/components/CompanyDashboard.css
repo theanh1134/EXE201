@@ -7,7 +7,7 @@
 .dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 100px 24px 40px 24px;
 }
 
 /* Header */
@@ -538,7 +538,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .dashboard-container {
-    padding: 16px;
+    padding: 100px 16px 16px 16px;
   }
 
   .dashboard-header {

@@ -142,7 +142,7 @@ const EmployerLayout = ({ children, currentPage = 'dashboard' }) => {
                 </main>
             </div>
 
-            <PartGOFooter />
+            
         </div>
     );
 };

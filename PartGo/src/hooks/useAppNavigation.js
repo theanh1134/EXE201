@@ -10,24 +10,19 @@ export const useAppNavigation = () => {
     const { isAuthenticated } = useAuth();
 
     /**
-     * Navigate to home page
+     * Navigate to home page (now redirects to jobs page)
      */
     const goToHome = () => {
-        navigate('/');
+        navigate('/jobs');
     };
 
     /**
-     * Navigate to jobs page (requires authentication)
-     * @param {Function} onShowLogin - Callback to show login modal if not authenticated
+     * Navigate to jobs page (no authentication required)
+     * Anyone can view the job listing page
+     * @param {Function} onShowLogin - Callback to show login modal if not authenticated (optional)
      */
     const goToJobs = (onShowLogin) => {
-        if (isAuthenticated) {
-            navigate('/jobs');
-        } else if (onShowLogin) {
-            onShowLogin();
-        } else {
-            navigate('/');
-        }
+        navigate('/jobs');
     };
 
     /**
@@ -50,7 +45,7 @@ export const useAppNavigation = () => {
         } else if (onShowLogin) {
             onShowLogin();
         } else {
-            navigate('/');
+            navigate('/jobs');
         }
     };
 
@@ -64,7 +59,7 @@ export const useAppNavigation = () => {
         } else if (onShowLogin) {
             onShowLogin();
         } else {
-            navigate('/');
+            navigate('/jobs');
         }
     };
 
@@ -78,7 +73,7 @@ export const useAppNavigation = () => {
         } else if (onShowLogin) {
             onShowLogin();
         } else {
-            navigate('/');
+            navigate('/jobs');
         }
     };
 

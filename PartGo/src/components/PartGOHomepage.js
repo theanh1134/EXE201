@@ -112,7 +112,7 @@ const PartGOHomepage = ({ onShowAllJobs, onOpenCv, onOpenCompanyDashboard, onVie
                     onShowSignUp={onShowSignUp}
                 />
                 {/* Hero Section */}
-                <div className="container py-5">
+                <div className="container" style={{ paddingTop: '120px', paddingBottom: '60px' }}>
                     <div className="row align-items-center">
                         <div className="col-lg-6">
                             <h1 className="display-4 fw-bold mb-4" style={{ color: '#2c3e50' }}>
@@ -233,7 +233,7 @@ const PartGOHomepage = ({ onShowAllJobs, onOpenCv, onOpenCompanyDashboard, onVie
                 </div>
 
                 {/* Categories Section */}
-                <div className="container py-5">
+                <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
                     <div className="row align-items-center mb-4">
                         <div className="col">
                             <h2 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>
@@ -277,7 +277,7 @@ const PartGOHomepage = ({ onShowAllJobs, onOpenCv, onOpenCompanyDashboard, onVie
                 </div>
 
                 {/* Start Posting Section */}
-                <div className="container py-5">
+                <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
                     <div className="row align-items-center">
                         <div className="col-lg-6">
                             <div className="p-5 rounded" style={{ backgroundColor: '#ff6b35', color: 'white' }}>
@@ -326,7 +326,7 @@ const PartGOHomepage = ({ onShowAllJobs, onOpenCv, onOpenCompanyDashboard, onVie
                 </div>
 
                 {/* Employer Benefits Section */}
-                <div className="container py-5">
+                <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
                     <div className="row align-items-center mb-4">
                         <div className="col">
                             <h2 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>
@@ -387,7 +387,7 @@ const PartGOHomepage = ({ onShowAllJobs, onOpenCv, onOpenCompanyDashboard, onVie
                 </div>
 
                 {/* Featured Jobs Section */}
-                <div className="container py-5">
+                <div className="container" style={{ paddingTop: '60px', paddingBottom: '60px' }}>
                     <div className="row align-items-center mb-4">
                         <div className="col">
                             <h2 className="fw-bold mb-0" style={{ color: '#2c3e50' }}>

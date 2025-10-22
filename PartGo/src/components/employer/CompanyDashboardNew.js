@@ -19,8 +19,8 @@ const CompanyDashboardNew = () => {
             }}>
                 <h2>Không có quyền truy cập</h2>
                 <p>Bạn cần đăng nhập với tài khoản nhà tuyển dụng để truy cập trang này.</p>
-                <button 
-                    onClick={() => window.location.href = '/'}
+                <button
+                    onClick={() => window.location.href = '/jobs'}
                     style={{
                         padding: '12px 24px',
                         background: '#3b82f6',

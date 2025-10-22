@@ -323,7 +323,7 @@ const CompanyReviews = ({ onBackToHome }) => {
                 <Header />
 
                 {/* Main Content */}
-                <div className="container py-4">
+                <div className="container" style={{ paddingTop: '100px', paddingBottom: '40px' }}>
                     {/* Page Header */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <div>
